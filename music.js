@@ -117,7 +117,9 @@
     if(armed) return; armed = true; btn.hidden = false; label('点按开乐');
     onGesture(function(e, off){
       if(e && e.target && e.target.closest && e.target.closest('#bgmBtn')) return;   /* 点浮标本身：交给它自己的 click，免得刚起播又被按停 */
-      audio.play().then(off).catch(function(){});   /* 起播成功才撤哨；这次不算数就继续等下一次点按 */
+      audio.play().then(off).catch(function(err){   /* 起播成功才撤哨；被拦则把原因亮在浮标上，便于排查 */
+        lbl.textContent = '仍被拦:' + (err && err.name || '?');
+      });
     });
   }
 
@@ -142,7 +144,10 @@
   btn.addEventListener('click', function(e){
     e.stopPropagation();
     if(audio.paused){
-      audio.play().then(function(){ want = true; LS.set(K_ON, 'on'); }).catch(armGesture);
+      audio.play().then(function(){ want = true; LS.set(K_ON, 'on'); }).catch(function(err){
+        lbl.textContent = '被拦:' + (err && err.name || '?');   /* 诊断：把浏览器拒绝的原因直接亮出来 */
+        armGesture();
+      });
     }else{
       audio.pause(); savePos(); want = false; LS.set(K_ON, 'off');
     }
