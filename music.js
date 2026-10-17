@@ -112,7 +112,7 @@
 
   /* 自动播放被拦时：读者第一次点按/按键就接着起播（只在「本来就想放」时武装） */
   function armGesture(){
-    if(armed) return; armed = true; btn.hidden = false;
+    if(armed) return; armed = true; btn.hidden = false; label('点按开乐');
     onGesture(function(e, off){
       if(e && e.target && e.target.closest && e.target.closest('#bgmBtn')) return;   /* 点浮标本身：交给它自己的 click，免得刚起播又被按停 */
       audio.play().then(off).catch(function(){});   /* 起播成功才撤哨；这次不算数就继续等下一次点按 */
