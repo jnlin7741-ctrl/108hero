@@ -105,7 +105,7 @@ input[type=text],input[type=search],textarea{cursor:url("data:image/svg+xml,%3Cs
         e.preventDefault();                           /* 同页锚点：拦下默认平滑滚动，瞬跳+放烟 */
         var el=d.getElementById(href.slice(1));
         var w=d.defaultView;
-        w.scrollTo({top:el.getBoundingClientRect().top+w.scrollY-80,behavior:'auto'});
+        w.scrollTo({top:el.getBoundingClientRect().top+w.scrollY-80,behavior:'instant'});
         try{d.defaultView.history.replaceState(null,'',href);}catch(_){}
         sweep();
       }
