@@ -96,6 +96,11 @@ input[type=text],input[type=search],textarea{cursor:url("data:image/svg+xml,%3Cs
   }
   function hook(){
     var d=view.contentDocument; if(!d)return;
+    /* 手势哨兵直接扎进内容层：读者的第一次点按/按键立刻上报外壳开声——
+       不依赖内页 music.js 是否新版，内外页缓存新旧混杂也不受影响 */
+    ['pointerdown','keydown','touchstart'].forEach(function(ev){
+      d.addEventListener(ev,function(){ try{ window.__jsshGesture && window.__jsshGesture(); }catch(_){} },{passive:true});
+    });
     d.addEventListener('click',function(e){
       var a=e.target.closest?e.target.closest('a[href]'):null;
       if(!a||a.target==='_blank')return;
