@@ -33,9 +33,9 @@
   window.__jsshBgm = true;
 
   var SRC = 'audio/bgm.mp3';
-  /* v2 键名：线上初版（修复前）可能把「止乐=off」误存进读者浏览器，
+  /* v3 键名：线上初版（修复前）可能把「止乐=off」误存进读者浏览器，
      换掉键名等于全站重新来过，不被旧状态闷住 */
-  var K_ON = 'jssh_bgm_v2', K_POS = 'jssh_bgm_pos_v2';
+  var K_ON = 'jssh_bgm_v3', K_POS = 'jssh_bgm_pos_v3';
   var LS = {
     get: function(k, d){ try{ var v = localStorage.getItem(k); return v === null ? d : v; }catch(e){ return d; } },
     set: function(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
@@ -117,6 +117,7 @@
     if(armed) return; armed = true; btn.hidden = false; label('点按开乐');
     onGesture(function(e, off){
       if(e && e.target && e.target.closest && e.target.closest('#bgmBtn')) return;   /* 点浮标本身：交给它自己的 click，免得刚起播又被按停 */
+      audio.muted = false;   /* 关键：muted 可能还挂着（静音起播失败时挂上的），有意起播必须先开声 */
       audio.play().then(off).catch(function(err){   /* 起播成功才撤哨；被拦则把原因亮在浮标上，便于排查 */
         lbl.textContent = '仍被拦:' + (err && err.name || '?');
       });
@@ -144,6 +145,7 @@
   btn.addEventListener('click', function(e){
     e.stopPropagation();
     if(audio.paused){
+      audio.muted = false;   /* 关键：起播前先开声——曾被静音起播挂过 muted 的话，不放哑剧 */
       audio.play().then(function(){ want = true; LS.set(K_ON, 'on'); }).catch(function(err){
         lbl.textContent = '被拦:' + (err && err.name || '?');   /* 诊断：把浏览器拒绝的原因直接亮出来 */
         armGesture();
