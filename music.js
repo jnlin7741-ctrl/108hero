@@ -33,7 +33,9 @@
   window.__jsshBgm = true;
 
   var SRC = 'audio/bgm.mp3';
-  var K_ON = 'jssh_bgm', K_POS = 'jssh_bgm_pos';
+  /* v2 键名：线上初版（修复前）可能把「止乐=off」误存进读者浏览器，
+     换掉键名等于全站重新来过，不被旧状态闷住 */
+  var K_ON = 'jssh_bgm_v2', K_POS = 'jssh_bgm_pos_v2';
   var LS = {
     get: function(k, d){ try{ var v = localStorage.getItem(k); return v === null ? d : v; }catch(e){ return d; } },
     set: function(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
