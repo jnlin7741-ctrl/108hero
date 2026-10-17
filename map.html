@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>山河舆图 · 一百单八将的足迹 | 绘卷水浒</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0e0a06; --ink2:#171009; --ink3:#221709;
+  --paper:#ead9b8; --paper2:#dfcda6; --paper3:#c9b285;
+  --cinn:#b02a1e; --cinn2:#d1452b; --cinn3:#7e1a12;
+  --gold:#c9a24b; --gold2:#e8ca7d; --gold3:#8f6f2a;
+  --ash:#8f8577; --night:#0a0d1a;
+  --azur:#2c6b64; --azur2:#3e8d81; --azur3:#1c4a45;
+  --rice:#efe2c1; --rice2:#e4d4ab; --mose:#2b1d0d;
+  --ease:cubic-bezier(.22,.85,.28,1); --ease-soft:cubic-bezier(.16,.68,.32,1);
+  --ven-fret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Cpath d='M1 25V1h24v24H5V5h16v16H9V9h8' fill='none' stroke='%238a6a2a' stroke-opacity='.34' stroke-width='1'/%3E%3C/svg%3E");
+  --ven-cloud:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='80'%3E%3Cg fill='none' stroke='%23b08234' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M10 58c0-9 8-16 17-13 2-11 15-16 24-9 4-8 16-9 21-2 9-3 19 3 19 12'/%3E%3Cpath d='M96 40c0-7 6-12 13-10 2-8 12-12 19-7 3-6 12-7 16-1 7-2 14 3 14 9'/%3E%3Cpath d='M150 62c0-8 7-14 15-12 2-10 13-14 21-8 4-7 14-8 18-1 8-3 17 3 17 11'/%3E%3C/g%3E%3C/svg%3E");
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background-color:#090604;color:var(--paper);font-family:'Noto Serif SC',serif;overflow-x:hidden;
+  background-image:url('images/bg_mural.jpg');
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center 0%;
+  background-attachment:fixed}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--cinn);color:var(--paper)}
+h1,h2,h3,.brush{font-family:'Ma Shan Zheng','Noto Serif SC',serif;font-weight:400}
+img{display:block;max-width:100%}
+::-webkit-scrollbar{width:0;height:0;display:none}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:transparent}html{scrollbar-width:none;scroll-behavior:smooth}
+
+/* ======== 通用 ======== */
+.wrap{max-width:1280px;margin:0 auto;padding:0 48px}
+.reveal{opacity:0;transform:translateY(46px);transition:opacity .9s cubic-bezier(.22,.8,.3,1),transform .9s cubic-bezier(.22,.8,.3,1)}
+.reveal.on{opacity:1;transform:none}
+.sec-head{text-align:center;margin-bottom:44px;position:relative}
+.sec-kicker{display:inline-flex;align-items:center;gap:14px;color:var(--gold);letter-spacing:.5em;font-size:18px;text-indent:.5em}
+.sec-kicker::before,.sec-kicker::after{content:'';width:56px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.sec-kicker::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.sec-title{font-size:clamp(42px,6vw,72px);margin-top:14px;color:var(--paper);text-shadow:0 4px 30px rgba(0,0,0,.6)}
+.sec-sub{color:var(--ash);margin-top:12px;font-size:18px;letter-spacing:.15em}
+
+/* ======== 顶栏 ======== */
+.bar{position:fixed;left:0;right:0;z-index:60;display:flex;align-items:center;gap:14px;
+  padding:0 22px;font-size:18px;letter-spacing:.14em;
+  background:url('images/ui/nav_bg.png') repeat center/380px,linear-gradient(180deg,rgba(9,6,3,.94),rgba(9,6,3,0))}
+.bar.top{top:0;height:74px}
+.bar .seal{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:5px;
+  font-family:'Ma Shan Zheng';font-size:21px;color:#f5e6cf;transform:rotate(-3deg);
+  background:linear-gradient(145deg,var(--cinn2),var(--cinn3));
+  box-shadow:0 3px 12px rgba(176,42,30,.45),inset 0 0 0 2px rgba(245,230,207,.32)}
+.bar .ttl{display:flex;align-items:center;gap:11px;font-family:'Ma Shan Zheng';font-size:24px;color:var(--paper)}
+.bar .hint{color:var(--gold3);font-size:18px}
+.bar .spacer{flex:1}
+.bar a.lnk{display:inline-flex;align-items:center;min-height:40px;padding:7px 16px;cursor:pointer;
+  border:1px solid rgba(201,162,75,.42);border-radius:20px;color:var(--paper2);background:rgba(14,10,6,.6);
+  font-family:'Noto Serif SC',serif;font-size:18px;letter-spacing:.14em;
+  transition:border-color .3s,color .3s,background .3s,transform .3s}
+.bar a.lnk:hover{border-color:var(--gold);color:#fff3cd;transform:translateY(-1px)}
+
+/* ======== 舆图 ======== */
+#mapsec{padding:130px 0 90px;background:linear-gradient(180deg,rgba(14,10,6,.72),rgba(23,16,9,.5) 30%,rgba(23,16,9,.5) 70%,rgba(14,10,6,.78))}
+.map-filter{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:30px}
+.chip{padding:9px 24px;font-size:18px;letter-spacing:.18em;text-indent:.18em;border:1px solid rgba(201,162,75,.35);color:var(--paper2);background:rgba(14,10,6,.55);border-radius:24px;cursor:pointer;transition:all .35s;font-family:'Noto Serif SC'}
+.chip:hover{border-color:var(--gold);color:var(--gold2)}
+.chip.act{background-image:url('images/ui/bg2.png'),linear-gradient(120deg,#c43a24,#a32415);background-repeat:repeat,no-repeat;background-position:center,center;background-size:170px,cover;border-color:rgba(232,202,125,.5);color:#f9edd6;text-shadow:0 2px 6px rgba(60,10,5,.6);box-shadow:inset 0 0 14px rgba(126,26,18,.5),0 6px 22px rgba(176,42,30,.4)}
+
+.mapbox{position:relative;border:1px solid rgba(201,162,75,.5);padding:10px;background:rgba(14,10,6,.6);
+  box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 0 0 1px rgba(201,162,75,.18)}
+.mapbox::before{content:'';position:absolute;inset:10px;border:1px solid rgba(201,162,75,.28);pointer-events:none;z-index:4}
+.map-frame{position:relative;overflow:hidden;
+  background-image:url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20Chinese%20ink%20wash%20painting%20map%2C%20bird%27s%20eye%20view%20of%20Song%20dynasty%20landscape%2C%20winding%20rivers%20in%20mineral%20blue%2C%20mountain%20ranges%20in%20dark%20ink%20strokes%2C%20lakes%20and%20marshlands%2C%20aged%20parchment%20texture%2C%20Dunhuang%20mural%20style%2C%20gold%20and%20cinnabar%20accents%2C%20misty%20clouds%2C%20traditional%20cartography%2C%20no%20text%20no%20labels%2C%20epic%20majestic%2C%20hand%20painted%20scroll&image_size=landscape_16_9');
+  background-size:cover;background-position:center}
+.map-frame::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:radial-gradient(ellipse at 50% 46%,transparent 52%,rgba(20,12,5,.5) 100%),linear-gradient(180deg,rgba(20,12,5,.22),transparent 18%,transparent 82%,rgba(20,12,5,.3))}
+.map-frame svg{position:relative;z-index:2;display:block;width:100%;height:auto;filter:sepia(.16) saturate(1.05)}
+
+/* 河流 */
+.river{fill:none;stroke:#4f9aa0;stroke-width:5;stroke-linecap:round;opacity:.85;
+  filter:drop-shadow(0 0 6px rgba(120,200,210,.45))}
+.river-t{fill:#bfe4e2;font-size:18px;letter-spacing:.35em;opacity:.92;font-style:italic}
+/* 行军路线 */
+.route{fill:none;stroke:var(--cinn2);stroke-width:2.4;stroke-dasharray:7 8;opacity:.62;
+  animation:routeFlow 30s linear infinite}
+@keyframes routeFlow{to{stroke-dashoffset:-600}}
+.route-t{fill:#e8a894;font-size:18px;letter-spacing:.2em;opacity:.85}
+/* 地点标记 */
+.poi{cursor:pointer}
+.poi .dot{fill:var(--gold2);stroke:#5c3f12;stroke-width:1.2;transition:r .3s}
+.poi .halo{fill:none;stroke:var(--gold2);stroke-width:1.4;opacity:.55;transform-origin:center;transform-box:fill-box;
+  animation:halo 3.2s ease-out infinite}
+.poi.big .dot{r:10}
+.poi text{fill:#f3e7c9;font-size:18px;letter-spacing:.1em;paint-order:stroke;stroke:rgba(14,9,4,.85);stroke-width:3px;font-family:'Noto Serif SC'}
+.poi.big text{font-family:'Ma Shan Zheng';font-size:28px;fill:#ffe9ad}
+.poi.battle .dot{fill:#e06a4e;stroke:#5c1a10}
+.poi.battle .halo{stroke:#e06a4e}
+.poi.end .dot{fill:#b9a3e0;stroke:#3c2a5c}
+.poi.end .halo{stroke:#b9a3e0}
+.poi:hover .dot{r:9}
+.poi.big:hover .dot{r:12}
+@keyframes halo{0%{transform:scale(.55);opacity:.75}80%{transform:scale(2.1);opacity:0}100%{transform:scale(2.1);opacity:0}}
+/* 筛选时的明暗 */
+#mapSvg.f-origin .poi:not(.origin),#mapSvg.f-battle .poi:not(.battle),#mapSvg.f-end .poi:not(.end){opacity:.16;pointer-events:none}
+#mapSvg.f-origin .poi:not(.origin) .halo,#mapSvg.f-battle .poi:not(.battle) .halo,#mapSvg.f-end .poi:not(.end) .halo{animation:none}
+.poi{transition:opacity .45s}
+/* 水域标注（不可点，仅 tooltip） */
+.water{cursor:default}
+.water text{fill:#bfe4e2;font-size:18px;letter-spacing:.3em;opacity:.9;font-style:italic;
+  paint-order:stroke;stroke:rgba(10,14,12,.8);stroke-width:3px}
+
+/* tooltip */
+.map-tip{position:absolute;z-index:8;pointer-events:none;max-width:300px;padding:10px 16px;
+  background:rgba(10,8,4,.94);border:1px solid rgba(201,162,75,.6);border-radius:4px;
+  font-size:18px;line-height:1.8;letter-spacing:.06em;color:#e8dcb8;opacity:0;transition:opacity .15s;
+  transform:translate(-50%,calc(-100% - 14px))}
+.map-tip b{color:var(--gold2);font-family:'Ma Shan Zheng';font-weight:400;font-size:21px;margin-right:8px;letter-spacing:.15em}
+.map-tip::after{content:'';position:absolute;left:50%;bottom:-5px;width:8px;height:8px;transform:translateX(-50%) rotate(45deg);
+  background:rgba(10,8,4,.94);border-right:1px solid rgba(201,162,75,.6);border-bottom:1px solid rgba(201,162,75,.6)}
+
+/* 图例 */
+.map-legend{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;margin-top:24px;font-size:18px;color:var(--paper3)}
+.map-legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:-1px}
+.lg-o{background:radial-gradient(circle,#ffe9ad,#c9a24b)}
+.lg-b{background:radial-gradient(circle,#f09a82,#c1452b)}
+.lg-e{background:radial-gradient(circle,#cfc0ee,#7c63b8)}
+.lg-r{display:inline-block;width:26px;height:0;border-top:2.5px dashed #d1452b;margin-right:8px;vertical-align:3px;border-radius:0}
+.lg-w{display:inline-block;width:26px;height:0;border-top:4px solid #4f9aa0;margin-right:8px;vertical-align:2px;border-radius:2px}
+.map-note{text-align:center;margin-top:26px;color:var(--ash);font-size:18px;letter-spacing:.2em;line-height:2}
+
+/* ======== 地点小卡 ======== */
+.modal-mask{position:fixed;inset:0;z-index:400;background:rgba(6,4,2,.82);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;padding:26px;opacity:0;pointer-events:none;transition:opacity .35s var(--ease-soft)}
+.modal-mask.show{opacity:1;pointer-events:auto}
+.poi-card{width:min(560px,100%);max-height:86vh;overflow-y:auto;position:relative;padding:44px 46px 42px;
+  background:linear-gradient(160deg,#f0e3c4,#e3d2ab);color:#2a1d0e;border:1px solid var(--gold3);
+  box-shadow:0 40px 120px rgba(0,0,0,.8);transform:translateY(36px) scale(.96);transition:transform .45s cubic-bezier(.2,.9,.3,1.1)}
+.modal-mask.show .poi-card{transform:none}
+.poi-card::before{content:'';position:absolute;inset:8px;border:1px solid rgba(143,111,42,.4);pointer-events:none;background:var(--ven-fret);background-position:top left;background-repeat:no-repeat;opacity:.5}
+.poi-close{position:absolute;top:12px;right:12px;z-index:2;width:34px;height:34px;border:none;border-radius:50%;cursor:pointer;
+  background:rgba(126,26,18,.9);color:#f3d9c8;font-size:18px;transition:transform .3s}
+.poi-close:hover{transform:rotate(90deg)}
+.poi-cat{display:inline-block;padding:5px 14px;font-size:18px;letter-spacing:.25em;text-indent:.25em;border:1px solid;border-radius:3px;margin-bottom:14px}
+.pc-origin{color:#7a5a1a;border-color:#bd9040;background:rgba(189,144,64,.14)}
+.pc-battle{color:#a02615;border-color:#c25b46;background:rgba(176,42,30,.1)}
+.pc-end{color:#5c4390;border-color:#9d87c9;background:rgba(157,135,201,.14)}
+.pc-river{color:#1c5a56;border-color:#4f9aa0;background:rgba(79,154,160,.12)}
+.poi-name{font-family:'Ma Shan Zheng';font-size:44px;color:#241704;line-height:1.15;margin-bottom:14px}
+.poi-desc{font-size:18px;line-height:2.15;color:#3d2c14;text-align:justify}
+.poi-heroes{margin-top:24px}
+.poi-heroes .ph-ttl{font-size:18px;letter-spacing:.3em;color:#7a5a2a;margin-bottom:12px}
+.poi-heroes .ph-list{display:flex;flex-wrap:wrap;gap:10px}
+a.poi-hero{padding:8px 16px;font-size:18px;letter-spacing:.1em;color:#f7ecd4;border-radius:3px;
+  background:linear-gradient(120deg,var(--cinn),var(--cinn2));border:1px solid rgba(245,230,207,.25);
+  box-shadow:0 4px 14px rgba(0,0,0,.3);transition:transform .3s,box-shadow .3s}
+a.poi-hero:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(176,42,30,.4)}
+a.poi-hero small{opacity:.8;margin-left:6px;font-size:18px}
+
+/* 音乐浮标（与全站共用 music.js） */
+.bgm{position:fixed;right:20px;bottom:22px;z-index:70;display:flex;align-items:center;gap:10px;min-height:44px;
+  padding:9px 17px;border:1px solid rgba(201,162,75,.5);border-radius:24px;cursor:pointer;
+  background:rgba(14,10,6,.86);backdrop-filter:blur(8px);color:var(--gold2);
+  font-family:'Noto Serif SC',serif;font-size:18px;letter-spacing:.16em;
+  transition:border-color .35s,color .35s,transform .35s;box-shadow:0 8px 26px rgba(0,0,0,.45)}
+.bgm:hover{border-color:var(--gold);color:#fff3cd;transform:translateY(-2px)}
+.bgm .bars{display:flex;align-items:flex-end;gap:2px;height:13px}
+.bgm .bars i{width:2px;height:4px;background:currentColor;border-radius:1px}
+.bgm.on .bars i{animation:bgmEq .9s ease-in-out infinite}
+.bgm.on .bars i:nth-child(2){animation-delay:.18s}
+.bgm.on .bars i:nth-child(3){animation-delay:.36s}
+@keyframes bgmEq{0%,100%{height:3px}50%{height:13px}}
+.bgm.off .bars{opacity:.35}
+
+/* ======== 响应式 ======== */
+@media (max-width:880px){
+  .wrap{padding:0 22px}
+  .bar{padding:0 14px}
+  .bar .hint{display:none}
+  .poi text{font-size:20px}
+  .poi.big text{font-size:30px}
+  .poi-card{padding:36px 26px 32px}
+  .bgm{right:14px;bottom:16px;padding:8px 14px;font-size:18px}
+}
+/* ======== 纹样装饰 ======== */
+.sec-head::after{content:'';display:block;width:min(560px,80vw);height:56px;margin:22px auto 0;background:url('images/ui/div2.png') no-repeat center/100% 100%;pointer-events:none;opacity:1}
+.bar a.lnk,.bgm,.chip{background-image:url('images/ui/bg2.png');background-size:210px}
+.chip{background-image:url('images/ui/bg2.png'),url('images/ui/border1.png'),url('images/ui/border1.png');background-size:200px,auto 6px,auto 6px;background-repeat:repeat,repeat-x,repeat-x;background-position:center,left top,left bottom}
+
+/* ======== 自定义鼠标：黑芯白边 ======== */
+html,body{cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%20viewBox='0%200%2032%2032'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='.6'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%2333261a'/%3E%3Cstop%20offset='.55'%20stop-color='%23221809'/%3E%3Cstop%20offset='1'%20stop-color='%23120c05'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M11%2013.4%20L26.5%2028.5'%20stroke='%23241a0e'%20stroke-width='2.6'%20stroke-linecap='round'/%3E%3Cpath%20d='M11%2013.4%20L26.5%2028.5'%20stroke='rgba(255,255,255,.35)'%20stroke-width='.8'%20stroke-linecap='round'/%3E%3Cpath%20d='M10.5%2011.5%20Q16%2012%2019%2016'%20stroke='%238e2a1c'%20stroke-width='1.8'%20fill='none'%20stroke-linecap='round'/%3E%3Cpath%20d='M9%2013%20Q14%2015%2015.5%2020'%20stroke='%238e2a1c'%20stroke-width='1.6'%20fill='none'%20stroke-linecap='round'/%3E%3Cpath%20d='M2%202%20Q10%204.5%2013.5%209%20L11.5%2014.5%20Q6.5%2011%202%202%20Z'%20fill=%22url(%23g)%22%20stroke='rgba(255,255,255,.55)'%20stroke-width='1.1'%20stroke-linejoin='round'/%3E%3C/svg%3E") 2 2,auto}
+a,button,label,select,.chip,.bgm,.bar a.lnk,.bar button,.btn,.gal-card,.bt-item,.ep-card,.fl-card,.tl-item,.poi,.spider-node,.spider-close,.modal-close,.modal-nav button,.poi-close,.node,.star,#skyCanvas,[onclick],#scrollbar{cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%20viewBox='0%200%2032%2032'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='.6'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%2333261a'/%3E%3Cstop%20offset='.55'%20stop-color='%23221809'/%3E%3Cstop%20offset='1'%20stop-color='%23120c05'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M23.5%2020%20L28.5%2025'%20stroke='%23241a0e'%20stroke-width='3'%20stroke-linecap='round'/%3E%3Cpath%20d='M20.5%2021.5%20L25.5%2016.5'%20stroke=%22url(%23g)%22%20stroke-width='2.6'%20stroke-linecap='round'/%3E%3Cpath%20d='M3%203%20Q14%205.5%2022.5%2013%20L25%2018.5%20Q14%2013.5%206.5%2010.5%20Z'%20fill=%22url(%23g)%22%20stroke='rgba(255,255,255,.55)'%20stroke-width='1.1'%20stroke-linejoin='round'/%3E%3C/svg%3E") 3 3,pointer !important}
+input[type=text],input[type=search],textarea{cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%20viewBox='0%200%2032%2032'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='.6'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%2333261a'/%3E%3Cstop%20offset='.55'%20stop-color='%23221809'/%3E%3Cstop%20offset='1'%20stop-color='%23120c05'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M11.5%205%20h9%20M16%205%20v22%20M11.5%2027%20h9'%20stroke='rgba(255,255,255,.55)'%20stroke-width='3.6'%20stroke-linecap='round'/%3E%3Cpath%20d='M11.5%205%20h9%20M16%205%20v22%20M11.5%2027%20h9'%20stroke=%22url(%23g)%22%20stroke-width='2.2'%20stroke-linecap='round'/%3E%3C/svg%3E") 16 16,text}
+/* ======== 滚动进度条（自定义，transform 驱动不重绘） ======== */
+#scrollbar{position:fixed;right:7px;top:12vh;bottom:12vh;width:3px;z-index:300;
+  background:rgba(201,162,75,.16);border-radius:3px}
+#scrollbar b{position:absolute;left:-35px;top:0;width:40px;height:96px;z-index:2;touch-action:none;
+  transform:translate3d(0,var(--fy,0px),0);
+  filter:drop-shadow(-2px 3px 4px rgba(0,0,0,.5))}
+/* 旗面即梁山「替天行道」绣字红旗：墨字描金缘，旗袂向左飘卷 */
+#scrollbar b::before{content:'替\A天\A行\A道';white-space:pre;box-sizing:border-box;
+  position:absolute;left:0;top:6px;width:34px;height:84px;padding-top:4px;padding-left:4px;
+  font-family:'Ma Shan Zheng','Noto Serif SC',serif;font-size:16px;line-height:1.1;text-align:center;
+  color:#170c06;text-shadow:0 0 1.5px rgba(240,215,140,.85),0 1px 1px rgba(0,0,0,.35);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cg fill='none' stroke='%23000000' stroke-opacity='.16' stroke-width='1' stroke-linecap='round'%3E%3Cpath d='M4 20 q6 -2 5 -8 q-4 1 -5 8'/%3E%3Cpath d='M9 12 q5 -6 11 -3 q-6 0 -11 3'/%3E%3Cpath d='M14 24 q5 -1 8 -6'/%3E%3Ccircle cx='21' cy='7' r='1.4'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(300deg,#d1452b,#b02a1e 48%,#8f1f14);
+  background-repeat:repeat,no-repeat;
+  clip-path:polygon(12% 0,100% 0,100% 100%,10% 100%,2% 94%,8% 86%,1% 76%,7% 66%,0% 56%,6% 46%,1% 36%,7% 26%,0% 16%,6% 8%);
+  box-shadow:inset 0 0 0 2px rgba(94,16,9,.55),inset -6px 0 10px rgba(0,0,0,.28),inset 4px 0 8px rgba(255,180,140,.22)}
+#scrollbar b::after{content:'';position:absolute;left:35px;top:2px;width:3px;height:92px;border-radius:2px;
+  background:radial-gradient(circle at 50% 3px,#ffe9ad 0 3px,rgba(0,0,0,0) 3.5px),
+    linear-gradient(180deg,var(--gold2),var(--gold3))}
+#scrollbar i{position:absolute;inset:0;border-radius:3px;transform-origin:top;transform:scaleY(0);
+  background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--cinn2))}
+</style>
+<script>
+/* 音乐之家：本页若被单独打开（顶层窗口），自动并入 shell.html */
+(function(){
+  try{
+    if(window.self!==window.top)return;
+    if(/shell\.html$/i.test(location.pathname))return;
+    var f=location.pathname.split('/').pop()||'index.html';
+    location.replace('shell.html#'+f+location.search);
+  }catch(e){}
+})();
+</script>
+</head>
+<body>
+
+<header class="bar top">
+  <span class="ttl"><span class="seal">绘</span>山河舆图</span>
+  <span class="hint">点开一处山水 · 读一段烽烟</span>
+  <span class="spacer"></span>
+  <a class="lnk" href="index.html">← 回书页</a>
+  <a class="lnk" href="scroll.html">← 回长卷</a>
+</header>
+
+<!-- ============ 山河舆图 ============ -->
+<section id="mapsec">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">宣 和 舆 地</div>
+      <h2 class="sec-title">山河舆图</h2>
+      <div class="sec-sub">一百单八将的足迹 —— 点一处山水，读一段烽烟</div>
+    </div>
+
+    <div class="map-filter reveal" id="mapFilter">
+      <button class="chip act" data-f="all">全 部</button>
+      <button class="chip" data-f="origin">聚义之地</button>
+      <button class="chip" data-f="battle">征战之地</button>
+      <button class="chip" data-f="end">终局之地</button>
+    </div>
+
+    <div class="mapbox reveal">
+      <div class="map-frame">
+        <svg id="mapSvg" viewBox="0 0 1200 675" preserveAspectRatio="xMidYMid meet">
+          <!-- 黄河（几字形大拐弯） -->
+          <path class="river" d="M108,186 C238,96 372,94 466,164 C546,222 626,256 742,236 C836,220 932,180 1068,200"/>
+          <!-- 长江 -->
+          <path class="river" d="M92,528 C292,472 492,492 692,472 C842,458 944,446 1118,474"/>
+          <!-- 行军路线 -->
+          <path class="route" d="M700,272 C645,222 585,195 560,184 C580,138 612,104 627,82"/>
+          <path class="route" d="M692,276 C600,242 520,216 446,202"/>
+          <path class="route" d="M692,290 C600,322 542,356 480,388"/>
+          <path class="route" d="M706,290 C640,360 575,415 522,454 C612,510 770,488 880,502 C840,540 800,572 774,590"/>
+          <text class="route-t" x="596" y="118">破辽</text>
+          <text class="route-t" x="540" y="222">征田虎</text>
+          <text class="route-t" x="540" y="352">讨王庆</text>
+          <text class="route-t" x="606" y="424">征方腊</text>
+          <!-- 地点由脚本注入 -->
+          <g id="poiLayer"></g>
+        </svg>
+      </div>
+      <div class="map-tip" id="mapTip"></div>
+    </div>
+
+    <div class="map-legend reveal">
+      <span><i class="lg-o"></i>聚义之地</span>
+      <span><i class="lg-b"></i>征战之地</span>
+      <span><i class="lg-e"></i>终局之地</span>
+      <span><i class="lg-r"></i>南征北讨 · 行军路线</span>
+      <span><i class="lg-w"></i>江河湖海</span>
+    </div>
+
+    <p class="map-note reveal">自五台山到蓼儿洼，纵横四千里 —— 好汉们从四面八方来，到四面八方去<br>山河无言，替他们记着</p>
+  </div>
+</section>
+
+<!-- 地点小卡 -->
+<div class="modal-mask" id="poiMask">
+  <div class="poi-card">
+    <button class="poi-close" id="poiClose">✕</button>
+    <div class="poi-cat" id="poiCat"></div>
+    <div class="poi-name" id="poiName"></div>
+    <div class="poi-desc" id="poiDesc"></div>
+    <div class="poi-heroes" id="poiHeroes">
+      <div class="ph-ttl">此 处 好 汉</div>
+      <div class="ph-list" id="poiHeroList"></div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="music.js"></script>
+<script>
+(function(){
+/* ============ 地点数据 ============
+   cat: origin 聚义 | battle 征战 | end 终局 | river 江河湖海
+   x,y 为 viewBox 1200x675 坐标；lx,ly 为地名文字锚点；la 为 text-anchor
+   heroes 为 HEROES 座次（1-108） */
+const POIS=[
+ {n:'东京·开封府',x:520,y:285,cat:'origin',lx:520,ly:314,la:'middle',
+  tip:'天子脚下，繁华堆里藏着刀',
+  d:'天子脚下，繁华堆里藏着刀。林冲在这儿误入白虎堂，杨志在这儿卖刀杀了牛二；大相国寺的垂杨柳，叫一个醉和尚连根拔起。樊楼的灯、州桥的夜，看尽了好汉们低头进城、又昂首出城的背影。',
+  h:[6,17,13]},
+ {n:'梁山泊',x:700,y:280,cat:'origin',big:1,lx:700,ly:248,la:'middle',
+  tip:'八百里水泊，替天行道的大旗就立在这儿',
+  d:'八百里水泊，港汊纵横，芦苇深处藏着一百单八面姓氏。王伦的小寨、晁盖的大旗、宋江的忠义堂——「替天行道」四个字，就是从这片水面上立起来的。天下的好汉走到绝路，抬头望见的，都是这一片茫茫烟水。',
+  h:[1,3,6]},
+ {n:'郓城',x:652,y:310,cat:'origin',lx:644,ly:314,la:'end',
+  tip:'小县城，大江湖',
+  d:'小县城，大江湖。押司宋江在这儿写了半辈子公文，朱仝、雷横在这儿当都头——这座城走出去的人，后来撑起了一整座梁山。',
+  h:[1,12,25]},
+ {n:'大名府',x:558,y:180,cat:'origin',lx:558,ly:158,la:'middle',
+  tip:'河北第一等富贵地',
+  d:'河北第一等富贵地。卢俊义在这儿做着他的员外梦，不知吴用一首藏头反诗，已经写上了他家的白墙。法场之上，石秀跳楼劫人；城破之日，索超的斧、燕青的弩，都归了梁山。',
+  h:[2,36,19]},
+ {n:'五台山',x:318,y:168,cat:'origin',lx:318,ly:146,la:'middle',
+  tip:'文殊道场，钟声渡人',
+  d:'文殊道场，钟声渡人。鲁智深在这儿剃了发，却剃不掉一身性子——醉打山门，笑骂由人。菩萨低眉，也容得下金刚怒目。',
+  h:[13]},
+ {n:'渭州',x:212,y:258,cat:'origin',lx:212,ly:236,la:'middle',
+  tip:'三拳打死镇关西的地方',
+  d:'西北风沙地。提辖鲁达在这儿三拳打死镇关西——一条好汉的前程打没了，一副慈悲心肠，却从这三拳里打了出来。',
+  h:[13]},
+ {n:'少华山',x:298,y:305,cat:'origin',lx:298,ly:332,la:'middle',
+  tip:'九纹龙的第一座江湖',
+  d:'华山余脉，史进少年的第一座江湖。九纹龙与朱武、陈达、杨春，先打后拜——好汉的山头，多半是这么结下的。',
+  h:[23,37,72,73]},
+ {n:'青州',x:800,y:250,cat:'origin',lx:810,ly:254,la:'start',
+  tip:'三山聚义打青州',
+  d:'青州地面，三山聚义。二龙山的鲁智深、武松、杨志，桃花山的李忠、周通，白虎山的孔明、孔亮，再合上梁山兵马——呼延灼的连环马，就折在了这一带。',
+  h:[13,14,17,8]},
+ {n:'登州',x:908,y:155,cat:'origin',lx:908,ly:133,la:'middle',
+  tip:'登州派的老窝',
+  d:'海滨州郡，登州派的老窝。解珍解宝两头大虫蒙冤下狱，顾大嫂劫牢，孙立反了——一州的好汉倾巢而出，齐齐整整上了梁山。',
+  h:[39,34,35,101]},
+ {n:'江州',x:515,y:460,cat:'origin',lx:515,ly:488,la:'middle',
+  tip:'浔阳楼上，一首反诗惊天下',
+  d:'浔阳江头，宋江一杯闷酒题下反诗，白龙庙小聚义，法场上刀下留人。戴宗的腿、李逵的斧、张顺的水性——江边的好汉，一水儿的义气。',
+  h:[1,20,22,30]},
+ {n:'祝家庄',x:738,y:250,cat:'battle',lx:738,ly:228,la:'middle',
+  tip:'三打祝家庄，打出梁山威风',
+  d:'独龙冈上三庄联防，盘陀路里机关重重。梁山三打祝家庄，孙立做了内应，扈三娘阵前被擒，李应的万贯家财烧作一炬——这一仗，打出了梁山的威风。',
+  h:[39,59,11]},
+ {n:'高唐州',x:640,y:240,cat:'battle',lx:632,ly:236,la:'end',
+  tip:'五雷天罡正法，劈开满城妖云',
+  d:'高廉妖法蔽日，满城黑气。公孙胜一场五雷天罡正法，劈开妖云；枯井里救出柴进——丹书铁券，终究敌不过人间义气。',
+  h:[4,10]},
+ {n:'曾头市',x:748,y:320,cat:'battle',lx:748,ly:348,la:'middle',
+  tip:'晁天王中箭归天之地',
+  d:'曾家五虎逞凶，晁盖中箭归天——梁山的开山寨主，把命留在了这里。后来卢俊义活捉史文恭，一箭之仇，血债血偿。',
+  h:[2,36]},
+ {n:'东昌府',x:795,y:200,cat:'battle',lx:795,ly:178,la:'middle',
+  tip:'没羽箭飞石，连打十五员大将',
+  d:'没羽箭张清飞石连打梁山一十五员大将；东平府董平双枪如龙。两员虎将同日归顺——梁山的马军，自此齐了。',
+  h:[16,15]},
+ {n:'檀州·辽境',x:628,y:72,cat:'battle',lx:628,ly:52,la:'middle',
+  tip:'马踏辽邦，未折一人',
+  d:'招安之后，大军北指。破檀州、取蓟州，关胜刀劈兀颜光——一百单八将马踏辽邦，未折一人。这是梁山最扬眉吐气的一页。',
+  h:[5,2,1]},
+ {n:'威胜州·田虎',x:438,y:198,cat:'battle',lx:438,ly:176,la:'middle',
+  tip:'铁血征途上唯一一段温柔',
+  d:'河北田虎，四大寇之一。乔道清妖术困住梁山，公孙胜再显神威；张清梦中传艺，与琼英阵前结缘——铁血征途上，唯一一段温柔。',
+  h:[4,16,2]},
+ {n:'淮西·王庆',x:472,y:395,cat:'battle',lx:472,ly:422,la:'middle',
+  tip:'打完了这一仗，南边就是方腊',
+  d:'王庆盘踞淮西八州，称王称帝。宋江、卢俊义分兵进剿，李俊水战立功——打完了这一仗，南边的方腊，已经在等着他们了。',
+  h:[26,3,2]},
+ {n:'杭州',x:888,y:505,cat:'battle',lx:888,ly:482,la:'middle',
+  tip:'东南都会，成了绞肉机',
+  d:'东南都会，也成了绞肉机。涌金门张顺归神，北关门索超、邓飞落马，徐宁项上中了药箭——钱塘江水，一半是泪，一半是血。',
+  h:[30,19,18,49]},
+ {n:'昱岭关',x:845,y:455,cat:'battle',lx:845,ly:433,la:'middle',
+  tip:'乱箭之下，六将无一生还',
+  d:'昱岭关前，史进、石秀等六将争功轻进，一头撞进庞万春的箭阵——乱箭之下，无人生还。第一个出场的好汉史进，把命留在了江南的关隘。',
+  h:[23,33,72,73]},
+ {n:'睦州·乌龙岭',x:812,y:545,cat:'battle',lx:802,ly:549,la:'end',
+  tip:'武松断臂之地',
+  d:'乌龙岭上，阮小二自刎，解珍解宝坠崖；睦州城下，武松被飞剑斩断一臂。岭还是那座岭，上去的好汉，下来的没几个。',
+  h:[14,27,34,35]},
+ {n:'清溪·帮源洞',x:768,y:595,cat:'battle',lx:768,ly:622,la:'middle',
+  tip:'方腊老巢，最后一战',
+  d:'方腊老巢，最后一战。秦明中了飞刀栽下马来，柴进卧底里应外合，鲁智深万松林里一杖擒了方腊——仗打赢了，一百单八将，也打没了大半。',
+  h:[7,13,10]},
+ {n:'六和寺',x:928,y:535,cat:'end',lx:938,ly:539,la:'start',
+  tip:'听潮而圆，见信而寂',
+  d:'钱塘江畔，潮信如雷。鲁智深听潮坐化，林冲风瘫养病，武松断臂出家——这座寺，收留了三条好汉的余生。',
+  h:[13,14,6]},
+ {n:'楚州·蓼儿洼',x:822,y:405,cat:'end',lx:822,ly:383,la:'middle',
+  tip:'替天行道的梦，葬在这儿',
+  d:'御酒里的毒，慢，却准。宋江拉上李逵同饮，吴用、花荣随后缢死墓前。蓼儿洼的芦苇年年青，葬着的是一整个替天行道的梦。',
+  h:[1,22,3,9]},
+ /* 江河湖海（仅标注与 tooltip） */
+ {n:'黄河',x:600,y:212,cat:'river',tip:'大河东去，淘尽多少英雄',
+  d:'大河东去，淘尽多少英雄。河北的麦子、汴梁的帆影、梁山的水汽，都是这条河养出来的。'},
+ {n:'长江',x:640,y:492,cat:'river',tip:'一道天堑，隔开了梁山与方腊',
+  d:'一道天堑，隔开了梁山与方腊，也隔开了生与死。江南的仗打完，能回到江北的，十停里只剩三停。'},
+ {n:'渤海',x:1045,y:128,cat:'river',tip:'登州出海，便是茫茫渤海',
+  d:'登州出海，便是茫茫渤海。当年孙立一行人泛海北上，也是打这片水面上走过的。'},
+ {n:'东海',x:1060,y:505,cat:'river',tip:'李俊扬帆出海，另立基业',
+  d:'征方腊后，李俊带着童威、童猛从这儿扬帆出海，暹罗国另立基业——一百单八将里，走得最远的一条路。'},
+ {n:'洞庭湖',x:445,y:515,cat:'river',tip:'八百里洞庭，与水泊梁山遥遥相望',
+  d:'八百里洞庭，烟波浩渺，与北方的水泊梁山遥遥相望——天下的水，都记得好汉的名字。'}
+];
+const CATN={origin:['聚义之地','pc-origin'],battle:['征战之地','pc-battle'],end:['终局之地','pc-end'],river:['江河湖海','pc-river']};
+const H=i=>HEROES[i-1];
+
+/* ============ 注入标记 ============ */
+const NS='http://www.w3.org/2000/svg';
+const layer=document.getElementById('poiLayer');
+POIS.forEach((p,idx)=>{
+  p.i=idx;
+  const g=document.createElementNS(NS,'g');
+  if(p.cat==='river'){
+    g.setAttribute('class','water');
+    g.dataset.i=idx;
+    const t=document.createElementNS(NS,'text');
+    t.setAttribute('x',p.x);t.setAttribute('y',p.y);t.setAttribute('text-anchor','middle');
+    t.textContent=p.n;
+    g.appendChild(t);
+  }else{
+    g.setAttribute('class','poi '+p.cat+(p.big?' big':''));
+    g.dataset.i=idx;
+    const halo=document.createElementNS(NS,'circle');
+    halo.setAttribute('class','halo');halo.setAttribute('cx',p.x);halo.setAttribute('cy',p.y);halo.setAttribute('r',p.big?11:7);
+    const dot=document.createElementNS(NS,'circle');
+    dot.setAttribute('class','dot');dot.setAttribute('cx',p.x);dot.setAttribute('cy',p.y);dot.setAttribute('r',p.big?10:6);
+    const t=document.createElementNS(NS,'text');
+    t.setAttribute('x',p.lx);t.setAttribute('y',p.ly);t.setAttribute('text-anchor',p.la);
+    t.textContent=p.n;
+    g.appendChild(halo);g.appendChild(dot);g.appendChild(t);
+  }
+  layer.appendChild(g);
+});
+
+/* ============ tooltip ============ */
+const box=document.querySelector('.mapbox'),tip=document.getElementById('mapTip');
+layer.addEventListener('mousemove',e=>{
+  const g=e.target.closest('g');if(!g||g.dataset.i===undefined){tip.style.opacity=0;return;}
+  const p=POIS[+g.dataset.i];
+  tip.innerHTML='<b>'+p.n+'</b>'+p.tip;
+  const r=box.getBoundingClientRect();
+  tip.style.left=(e.clientX-r.left)+'px';
+  tip.style.top=(e.clientY-r.top)+'px';
+  tip.style.opacity=1;
+});
+layer.addEventListener('mouseleave',()=>tip.style.opacity=0);
+
+/* ============ 地点小卡 ============ */
+const mask=document.getElementById('poiMask');
+function openPoi(i){
+  const p=POIS[i],[cn,cc]=CATN[p.cat];
+  const cat=document.getElementById('poiCat');
+  cat.textContent=cn;cat.className='poi-cat '+cc;
+  document.getElementById('poiName').textContent=p.n;
+  document.getElementById('poiDesc').textContent=p.d;
+  const hs=document.getElementById('poiHeroes'),hl=document.getElementById('poiHeroList');
+  if(p.h&&p.h.length){
+    hs.style.display='';
+    hl.innerHTML=p.h.map(no=>{
+      const h=H(no);
+      return '<a class="poi-hero" href="story.html?id='+no+'&from=map">'+h.n+'<small>'+h.nick+'</small></a>';
+    }).join('');
+  }else hs.style.display='none';
+  mask.classList.add('show');
+}
+function closePoi(){mask.classList.remove('show')}
+layer.addEventListener('click',e=>{
+  const g=e.target.closest('g');if(!g||g.dataset.i===undefined)return;
+  tip.style.opacity=0;openPoi(+g.dataset.i);
+});
+document.getElementById('poiClose').onclick=closePoi;
+mask.addEventListener('click',e=>{if(e.target===mask)closePoi()});
+addEventListener('keydown',e=>{if(e.key==='Escape')closePoi()});
+
+/* ============ 筛选 ============ */
+const svg=document.getElementById('mapSvg');
+document.getElementById('mapFilter').addEventListener('click',e=>{
+  const b=e.target.closest('.chip');if(!b)return;
+  document.querySelectorAll('#mapFilter .chip').forEach(c=>c.classList.toggle('act',c===b));
+  const f=b.dataset.f;
+  svg.className.baseVal=f==='all'?'':'f-'+f;
+});
+
+/* ============ 入场 ============ */
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');io.unobserve(x.target)}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+})();
+</script>
+<div id="scrollbar"><i id="scrollbarFill"></i><b id="scrollbarFlag"></b></div>
+<script>
+/* 滚动进度条 */
+(function(){
+  var bar=document.getElementById('scrollbar'),fill=document.getElementById('scrollbarFill'),
+      flag=document.getElementById('scrollbarFlag'),raf=0;
+  function up(){raf=0;var m=document.documentElement.scrollHeight-innerHeight;
+    var p=m>0?Math.min(1,Math.max(0,scrollY/m)):0;
+    fill.style.transform='scaleY('+p+')';
+    flag.style.setProperty('--fy',(p*(bar.clientHeight-86)).toFixed(1)+'px')}
+  addEventListener('scroll',function(){if(!raf)raf=requestAnimationFrame(up)},{passive:true});
+  addEventListener('resize',up);up();
+  /* 点击跳转 + 拖拽滚动 */
+  function seek(e){
+    var r=bar.getBoundingClientRect();
+    var p=Math.min(1,Math.max(0,(e.clientY-r.top)/r.height));
+    var m=document.documentElement.scrollHeight-innerHeight;
+    window.scrollTo({top:p*m,behavior:'instant'});
+  }
+  bar.addEventListener('pointerdown',function(e){
+    e.preventDefault();
+    try{bar.setPointerCapture(e.pointerId)}catch(_){}
+    seek(e);
+    function mv(ev){seek(ev)}
+    function end(){bar.removeEventListener('pointermove',mv);bar.removeEventListener('pointerup',end);bar.removeEventListener('pointercancel',end)}
+    bar.addEventListener('pointermove',mv);
+    bar.addEventListener('pointerup',end);
+    bar.addEventListener('pointercancel',end);
+  });
+})();
+</script>
+</body>
+</html>
