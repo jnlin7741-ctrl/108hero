@@ -17,8 +17,17 @@
    ================================================================ */
 (function(){
   /* 在外壳（shell.html）的 iframe 里：音乐由外壳那一层统一负责，
-     本层不再自建音频与浮标，否则会变成两份声音叠着放。 */
-  try{ if(window.self !== window.top) return; }catch(e){ return; }
+     本层不再自建音频与浮标，否则会变成两份声音叠着放。
+     但要帮外壳一个忙：读者点按的是本层页面，事件传不到外壳 window；
+     而线上空间（github.io 等陌生域名）没有自动播放特权，曲子只能静音起播、
+     等「读者第一次动手」才开声——所以本层把点按/按键如实上报给外壳。 */
+  try{
+    if(window.self !== window.top){
+      var tell = function(){ try{ window.parent && window.parent.__jsshGesture && window.parent.__jsshGesture(); }catch(e){} };
+      ['pointerdown','keydown','touchstart'].forEach(function(ev){ addEventListener(ev, tell, {passive:true}); });
+      return;
+    }
+  }catch(e){ return; }
 
   if(window.__jsshBgm)return;           /* 同一页被引两次也不重复初始化 */
   window.__jsshBgm = true;
@@ -53,6 +62,26 @@
   var want = LS.get(K_ON, 'on') !== 'off';   /* 读者此前止过乐就一直安静 */
   var armed = false, lastSaveAt = 0;
 
+  /* ---------- 手势总线：外壳自己窗口的点按 + iframe 里上报上来的点按，都算数 ----------
+     读者实际点的是 iframe 里的书页，DOM 事件传不到外壳 window；
+     iframe 里的 music.js 分身会把「动手了」通过 __jsshGesture 报上来。 */
+  var gestureFns = [];
+  function onGesture(fn){
+    var evs = ['pointerdown','keydown','touchstart'], done = false;
+    function off(){
+      if(done) return; done = true;
+      evs.forEach(function(ev){ removeEventListener(ev, fire); });
+      var i = gestureFns.indexOf(fire); if(i > -1) gestureFns.splice(i, 1);
+    }
+    function fire(e){ if(!done) fn(e, off); }
+    evs.forEach(function(ev){ addEventListener(ev, fire, {passive:true}); });
+    gestureFns.push(fire);
+    return off;
+  }
+  window.__jsshGesture = function(){
+    gestureFns.slice().forEach(function(f){ f(); });
+  };
+
   function label(t){ btn.hidden = false; lbl.textContent = t; }
   function state(on){ btn.hidden = false; btn.classList.toggle('on', on); btn.classList.toggle('off', !on); lbl.textContent = on ? '止乐' : '启卷'; }
 
@@ -72,30 +101,22 @@
 
   /* 有声自动播放被拦时：立刻改为「静音起播」——浏览器一律放行，
      曲子从进门那一刻就在走；读者第一次点按/按键时取消静音，
-     听感上就是「一进来音乐就在放」，无需去按浮标。 */
+     听感上就是「一进来音乐就在放」，无需去按浮标。
+     点按无论落在外壳窗口还是 iframe 书页里，都经手势总线开声。 */
   function startMuted(){
     audio.muted = true;
     audio.play().then(function(){
-      var evs = ['pointerdown', 'keydown', 'touchstart'];
-      var un = function(){
-        audio.muted = false;
-        evs.forEach(function(ev){ removeEventListener(ev, un); });
-      };
-      evs.forEach(function(ev){ addEventListener(ev, un, {passive:true}); });
+      onGesture(function(e, off){ audio.muted = false; off(); });
     }).catch(armGesture);   /* 连静音都被拦（极少见）→ 退回首次点按起播 */
   }
 
   /* 自动播放被拦时：读者第一次点按/按键就接着起播（只在「本来就想放」时武装） */
   function armGesture(){
     if(armed) return; armed = true; btn.hidden = false;
-    var evs = ['pointerdown', 'keydown', 'touchstart'];
-    var go = function(e){
+    onGesture(function(e, off){
       if(e && e.target && e.target.closest && e.target.closest('#bgmBtn')) return;   /* 点浮标本身：交给它自己的 click，免得刚起播又被按停 */
-      audio.play().then(function(){
-        evs.forEach(function(ev){ removeEventListener(ev, go); });   /* 起播成功才撤哨 */
-      }).catch(function(){});                                        /* 这次不算数（还不算有效交互）就继续等下一次点按 */
-    };
-    evs.forEach(function(ev){ addEventListener(ev, go, {passive:true}); });
+      audio.play().then(off).catch(function(){});   /* 起播成功才撤哨；这次不算数就继续等下一次点按 */
+    });
   }
 
   audio.addEventListener('loadedmetadata', function(){
