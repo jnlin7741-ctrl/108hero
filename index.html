@@ -21,7 +21,7 @@ html{scroll-behavior:smooth}
 body{background-color:#090604;color:var(--paper);font-family:'Noto Serif SC',serif;overflow-x:hidden}
 /* 整站底图：血海梁山长卷 · 火天／大军／水光，随滚动由天顶缓缓移向水面。
    放在 fixed 伪元素上用 transform 驱动（合成层，滚动不重绘），避免每帧全页背景重排 */
-body::before{content:'';position:fixed;left:0;right:0;top:-25vh;height:150vh;z-index:-1;
+body::before{content:'';position:fixed;left:0;right:0;top:0;height:280vh;z-index:-1;
   background:url('images/bg_mural.jpg') no-repeat center/cover;
   transform:translate3d(0,var(--bgty,0vh),0)}
 
@@ -115,6 +115,44 @@ nav.solid{background-color:rgba(14,10,6,.94);padding:10px 40px;box-shadow:0 2px 
 .scroll-hint{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:3;color:var(--gold);font-size:18px;letter-spacing:.4em;text-indent:.4em;opacity:0;animation:fadeUp 1s 2.4s forwards}
 .scroll-hint::after{content:'';display:block;width:1px;height:44px;margin:12px auto 0;background:linear-gradient(180deg,var(--gold),transparent);animation:drip 1.8s infinite}
 @keyframes drip{0%{transform:scaleY(0);transform-origin:top}55%{transform:scaleY(1);transform-origin:top}56%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ======== 出阵图 ======== */
+#chuzhen{position:relative;padding:130px 0;color:var(--paper);overflow:visible}
+#chuzhen>.wrap{position:relative;z-index:2;max-width:none;overflow-x:auto}
+.cz-layout{display:flex;gap:1px;align-items:flex-start;justify-content:center}
+.chuzhen-frame{position:relative;max-width:none;margin:0;flex-shrink:0;border:1px solid rgba(201,162,75,.4);padding:18px;background:rgba(12,8,5,.55);box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.chuzhen-frame::before{content:'';position:absolute;inset:-14px;border:1px solid rgba(201,162,75,.22);pointer-events:none;transform:translate(10px,-10px)}
+.chuzhen-frame::after{content:'';position:absolute;inset:9px;pointer-events:none;z-index:3;border:1px solid rgba(201,162,75,.18)}
+.chuzhen-frame img{width:auto;height:810px;display:block;filter:saturate(1.06) contrast(1.05);transition:transform .8s cubic-bezier(.22,.8,.3,1)}
+.chuzhen-frame:hover img{transform:scale(1.015)}
+.chuzhen-frame .seal{position:absolute;right:-20px;bottom:-20px;width:72px;height:72px;font-size:34px;z-index:5;
+  background-image:url('images/ui/bg2.png'),linear-gradient(145deg,#c43a24,#8f1f12);
+  background-repeat:repeat,no-repeat;background-position:center,center;background-size:150px,cover;
+  box-shadow:0 6px 18px rgba(0,0,0,.5),inset 0 0 0 2px rgba(245,230,207,.45),inset 0 0 14px rgba(90,15,8,.6);
+  text-shadow:0 1px 4px rgba(90,15,8,.7)}
+.chuzhen-tag{position:absolute;top:-18px;left:30px;z-index:5;padding:7px 22px;font-size:18px;letter-spacing:.3em;text-indent:.3em;
+  color:#f9edd6;background-image:url('images/ui/bg2.png'),linear-gradient(120deg,#c43a24,#a32415);
+  background-repeat:repeat,no-repeat;background-position:center,center;background-size:170px,cover;
+  border:1px solid rgba(232,202,125,.55);text-shadow:0 2px 6px rgba(60,10,5,.6);
+  box-shadow:0 8px 20px rgba(0,0,0,.55),inset 0 0 16px rgba(126,26,18,.5)}
+/* 人物热点：金色脉冲圆点 */
+.cz-hot{position:absolute;margin-left:-9px;margin-top:-9px;width:18px;height:18px;border-radius:50%;z-index:6;cursor:grab;
+  background:radial-gradient(circle,#fff3cd 0%,#e8ca7d 40%,#c9a24b 70%,transparent 100%);
+  box-shadow:0 0 0 0 rgba(232,202,125,.7),0 0 14px 4px rgba(232,202,125,.55);
+  animation:czPulse 2s ease-in-out infinite;transition:width .2s,height .2s,margin .2s}
+.cz-hot::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(232,202,125,.6);animation:czRing 2s ease-out infinite}
+@keyframes czPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,202,125,.7),0 0 10px 2px rgba(232,202,125,.4)}50%{box-shadow:0 0 0 8px rgba(232,202,125,0),0 0 18px 6px rgba(232,202,125,.7)}}
+@keyframes czRing{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.4);opacity:0}}
+.cz-hot:hover{width:24px;height:24px;margin-left:-12px;margin-top:-12px;z-index:25}
+.cz-hot.dragging{cursor:grabbing;z-index:30}
+/* 右侧详情板块 */
+.cz-detail{width:480px;flex-shrink:0;position:relative}
+.cz-card{position:relative;display:block;width:480px;height:830px;overflow:hidden;
+  padding:10px;border:1px solid rgba(201,162,75,.5);background:rgba(8,5,3,.92);
+  box-shadow:0 18px 50px rgba(0,0,0,.75),inset 0 0 0 1px rgba(201,162,75,.25)}
+.cz-card::before{content:'';position:absolute;inset:5px;border:1px solid rgba(201,162,75,.3);pointer-events:none;z-index:3}
+.cz-card img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 35%;transition:opacity .4s ease}
+@media(max-width:1100px){.cz-layout{flex-direction:column;align-items:center}.cz-detail{padding-top:0}}
 
 /* ======== 缘起（宣纸亮章） ======== */
 #about{background:none;padding:130px 0;color:var(--paper)}
@@ -672,6 +710,7 @@ input[type=text],input[type=search],textarea{cursor:url("data:image/svg+xml,%3Cs
   <a class="nav-brand" href="#hero"><span class="seal">绘</span>绘卷水浒<small>一百单八将 · 全传</small></a>
   <div class="nav-links">
     <a href="#about">绘卷缘起</a>
+    <a href="#chuzhen">出阵图</a>
     <a href="#main">全书主线</a>
     <a href="gallery.html" class="nav-ext">名绘</a>
     <a href="scroll.html" class="nav-ext">长卷·一百单八将</a>
@@ -756,6 +795,65 @@ input[type=text],input[type=search],textarea{cursor:url("data:image/svg+xml,%3Cs
       <div class="st"><b>八 卷</b><i>乱世群雄 → 蓼儿洼</i></div>
       <div class="st"><b>四 征</b><i>破辽 · 田虎 · 王庆 · 方腊</i></div>
       <div class="st"><b>九 战</b><i>江南血泪 · 单独成章</i></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 出阵图 ============ -->
+<section id="chuzhen">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">出 阵 图</div>
+      <h2 class="sec-title">出阵图</h2>
+      <div class="sec-sub"></div>
+    </div>
+    <div class="cz-layout">
+      <div class="chuzhen-frame reveal" id="chuzhenFrame">
+        <span class="chuzhen-tag">出 阵 图</span>
+        <img src="images/chuzhen.jpg" alt="出阵图">
+        <span class="seal">阵</span>
+        <!-- 人物热点：散布于下方河江区域，鼠标悬停在右侧详情区显示对应人物 -->
+        <span class="cz-hot" style="left:12%;top:62%" title="花和尚·鲁智深" data-img="images/chuzhen/luzhishen.jpg"></span>
+        <span class="cz-hot" style="left:88%;top:64%" title="黑旋风·李逵" data-img="images/chuzhen/likui.jpg"></span>
+        <span class="cz-hot" style="left:41%;top:87%" title="八臂哪吒·项充" data-img="images/chuzhen/xiangchong.jpg"></span>
+        <span class="cz-hot" style="left:67%;top:71%" title="大刀·关胜" data-img="images/chuzhen/guansheng.jpg"></span>
+        <span class="cz-hot" style="left:22%;top:78%" title="丑郡马·宣赞" data-img="images/chuzhen/xuanzan.jpg"></span>
+        <span class="cz-hot" style="left:55%;top:61%" title="井木犴·郝思文" data-img="images/chuzhen/haosiwen.jpg"></span>
+        <span class="cz-hot" style="left:78%;top:84%" title="一丈青·扈三娘" data-img="images/chuzhen/husanniang.jpg"></span>
+        <span class="cz-hot" style="left:8%;top:82%" title="锦毛虎·燕顺" data-img="images/chuzhen/yanshun.jpg"></span>
+        <span class="cz-hot" style="left:93%;top:77%" title="丧门神·鲍旭" data-img="images/chuzhen/baoxu.jpg"></span>
+        <span class="cz-hot" style="left:34%;top:66%" title="混世魔王·樊瑞" data-img="images/chuzhen/fanrui.jpg"></span>
+        <span class="cz-hot" style="left:61%;top:88%" title="飞天大圣·李衮" data-img="images/chuzhen/ligun.jpg"></span>
+        <span class="cz-hot" style="left:48%;top:73%" title="毛头星·孔明" data-img="images/chuzhen/kongming.jpg"></span>
+        <span class="cz-hot" style="left:73%;top:62%" title="独火星·孔亮" data-img="images/chuzhen/kongliang.jpg"></span>
+        <span class="cz-hot" style="left:27%;top:88%" title="浪子·燕青" data-img="images/chuzhen/yanqing.jpg"></span>
+        <span class="cz-hot" style="left:84%;top:71%" title="金毛犬·段景住" data-img="images/chuzhen/duanjingzhu.jpg"></span>
+        <span class="cz-hot" style="left:16%;top:70%" title="鼓上蚤·时迁" data-img="images/chuzhen/shiqian.jpg"></span>
+        <span class="cz-hot" style="left:58%;top:79%" title="白日鼠·白胜" data-img="images/chuzhen/baisheng.jpg"></span>
+        <span class="cz-hot" style="left:39%;top:80%" title="石将军·石勇" data-img="images/chuzhen/shiyong.jpg"></span>
+        <span class="cz-hot" style="left:71%;top:88%" title="金钱豹子·汤隆" data-img="images/chuzhen/tanglong.jpg"></span>
+        <span class="cz-hot" style="left:5%;top:68%" title="独角龙·邹润" data-img="images/chuzhen/zourun.jpg"></span>
+        <span class="cz-hot" style="left:90%;top:86%" title="出林龙·邹渊" data-img="images/chuzhen/zhouyuan.jpg"></span>
+        <span class="cz-hot" style="left:45%;top:62%" title="拼命三郎·石秀" data-img="images/chuzhen/shixiu.jpg"></span>
+        <span class="cz-hot" style="left:64%;top:82%" title="病关索·杨雄" data-img="images/chuzhen/yangxiong.jpg"></span>
+        <span class="cz-hot" style="left:31%;top:73%" title="青眼虎·李云" data-img="images/chuzhen/liyun.jpg"></span>
+        <span class="cz-hot" style="left:81%;top:62%" title="笑面虎·朱富" data-img="images/chuzhen/zhufu.jpg"></span>
+        <span class="cz-hot" style="left:19%;top:63%" title="旱地忽律·朱贵" data-img="images/chuzhen/zhugui.jpg"></span>
+        <span class="cz-hot" style="left:52%;top:87%" title="急先锋·索超" data-img="images/chuzhen/suochao.jpg"></span>
+        <span class="cz-hot" style="left:37%;top:69%" title="锦豹子·杨林" data-img="images/chuzhen/yanglin.jpg"></span>
+        <span class="cz-hot" style="left:76%;top:76%" title="小霸王·周通" data-img="images/chuzhen/zhoutong.jpg"></span>
+        <span class="cz-hot" style="left:11%;top:88%" title="打虎将·李忠" data-img="images/chuzhen/lizhong.jpg"></span>
+        <span class="cz-hot" style="left:59%;top:66%" title="操刀鬼·曹正" data-img="images/chuzhen/caozheng.jpg"></span>
+        <span class="cz-hot" style="left:43%;top:76%" title="母夜叉·孙二娘" data-img="images/chuzhen/sunerniang.jpg"></span>
+        <span class="cz-hot" style="left:68%;top:76%" title="菜园子·张青" data-img="images/chuzhen/zhangqing.jpg"></span>
+        <span class="cz-hot" style="left:25%;top:82%" title="青面兽·杨志" data-img="images/chuzhen/yangzhi.jpg"></span>
+        <span class="cz-hot" style="left:87%;top:82%" title="白面郎君·郑天寿" data-img="images/chuzhen/zhengtianshou.jpg"></span>
+        <span class="cz-hot" style="left:50%;top:69%" title="矮脚虎·王英" data-img="images/chuzhen/wangying.jpg"></span>
+      </div>
+      <!-- 右侧详情板块：悬停热点时显示对应人物卡 -->
+      <div class="cz-detail" id="czDetail">
+        <span class="cz-card"><img id="czDetailImg" src="images/chuzhen/luzhishen.jpg" alt="人物详情"></span>
+      </div>
     </div>
   </div>
 </section>
@@ -1258,11 +1356,39 @@ document.querySelectorAll('#statsGrid b').forEach(b=>sio.observe(b));
     raf=0;
     const max=Math.max(1,document.documentElement.scrollHeight-innerHeight);
     const p=Math.min(1,Math.max(0,scrollY/max));
-    body.style.setProperty('--bgty',(-p*25).toFixed(2)+'vh');
+    body.style.setProperty('--bgty',(-p*150).toFixed(2)+'vh');
   }
   addEventListener('scroll',()=>{ if(!raf) raf=requestAnimationFrame(drift); },{passive:true});
   addEventListener('resize',drift);
   drift();
+})();
+/* 出阵图热点拖拽定位：按住热点拖动到准确位置，松开即锁定 */
+(function(){
+  const frame=document.getElementById('chuzhenFrame');
+  if(!frame) return;
+  const hotspots=frame.querySelectorAll('.cz-hot');
+  const detailImg=document.getElementById('czDetailImg');
+  hotspots.forEach(h=>{
+    h.addEventListener('mouseenter',()=>{ if(detailImg && h.dataset.img){ detailImg.style.opacity='0'; setTimeout(()=>{detailImg.src=h.dataset.img;detailImg.style.opacity='1'},180);} });
+    h.addEventListener('mousedown',e=>{
+      e.preventDefault();
+      h.classList.add('dragging');
+      const rect=frame.getBoundingClientRect();
+      function move(ev){
+        const x=((ev.clientX-rect.left)/rect.width*100).toFixed(1);
+        const y=((ev.clientY-rect.top)/rect.height*100).toFixed(1);
+        h.style.left=x+'%';h.style.top=y+'%';
+      }
+      function up(){
+        h.classList.remove('dragging');
+        console.log('[出阵图热点]',h.title,'→ left:'+h.style.left,'top:'+h.style.top);
+        document.removeEventListener('mousemove',move);
+        document.removeEventListener('mouseup',up);
+      }
+      document.addEventListener('mousemove',move);
+      document.addEventListener('mouseup',up);
+    });
+  });
 })();
 /* ============ 九大战役 · 蜘蛛图 ============ */
 const BATTLES=[
