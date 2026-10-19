@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>演武堂 · 征方腊阵型推演 | 绘卷水浒</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0e0a06; --ink2:#171009; --ink3:#221709;
+  --paper:#ead9b8; --paper2:#dfcda6;
+  --cinn:#b02a1e; --cinn2:#d1452b; --cinn3:#7e1a12;
+  --gold:#c9a24b; --gold2:#e8ca7d; --gold3:#8f6f2a;
+  --ash:#8f8577;
+  --azur:#2c6b64; --azur2:#3e8d81;
+  --ease:cubic-bezier(.22,.85,.28,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scrollbar-width:none;scroll-behavior:smooth}
+body{background-color:#090604;color:var(--paper);font-family:'Noto Serif SC',serif;overflow-x:hidden;min-height:100vh}
+/* 固定底图（伪元素合成层，滚动不重绘） */
+body::before{content:'';position:fixed;inset:0;z-index:-1;
+  background:url('images/bg_mural.jpg') no-repeat center/cover;
+  transform:translateZ(0)}
+body::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(14,10,6,.82),rgba(23,16,9,.66) 40%,rgba(14,10,6,.88))}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--cinn);color:var(--paper)}
+h1,h2,h3,.brush{font-family:'Ma Shan Zheng','Noto Serif SC',serif;font-weight:400}
+img{display:block;max-width:100%}
+::-webkit-scrollbar{width:0;height:0;display:none}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ======== 自定义鼠标：黑芯白边（与全站一致） ======== */
+html,body{cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%20viewBox='0%200%2032%2032'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='.6'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%2333261a'/%3E%3Cstop%20offset='.55'%20stop-color='%23221809'/%3E%3Cstop%20offset='1'%20stop-color='%23120c05'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M11%2013.4%20L26.5%2028.5'%20stroke='%23241a0e'%20stroke-width='2.6'%20stroke-linecap='round'/%3E%3Cpath%20d='M11%2013.4%20L26.5%2028.5'%20stroke='rgba(255,255,255,.35)'%20stroke-width='.8'%20stroke-linecap='round'/%3E%3Cpath%20d='M10.5%2011.5%20Q16%2012%2019%2016'%20stroke='%238e2a1c'%20stroke-width='1.8'%20fill='none'%20stroke-linecap='round'/%3E%3Cpath%20d='M9%2013%20Q14%2015%2015.5%2020'%20stroke='%238e2a1c'%20stroke-width='1.6'%20fill='none'%20stroke-linecap='round'/%3E%3Cpath%20d='M2%202%20Q10%204.5%2013.5%209%20L11.5%2014.5%20Q6.5%2011%202%202%20Z'%20fill=%22url(%23g)%22%20stroke='rgba(255,255,255,.55)'%20stroke-width='1.1'%20stroke-linejoin='round'/%3E%3C/svg%3E") 2 2,auto}
+a,button,.chip,.hero-card,.cell-unit,.zmark,.tab-close,.seal-btn,.modal-close,[onclick]{cursor:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%20viewBox='0%200%2032%2032'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='.6'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%2333261a'/%3E%3Cstop%20offset='.55'%20stop-color='%23221809'/%3E%3Cstop%20offset='1'%20stop-color='%23120c05'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d='M23.5%2020%20L28.5%2025'%20stroke='%23241a0e'%20stroke-width='3'%20stroke-linecap='round'/%3E%3Cpath%20d='M20.5%2021.5%20L25.5%2016.5'%20stroke=%22url(%23g)%22%20stroke-width='2.6'%20stroke-linecap='round'/%3E%3Cpath%20d='M3%203%20Q14%205.5%2022.5%2013%20L25%2018.5%20Q14%2013.5%206.5%2010.5%20Z'%20fill=%22url(%23g)%22%20stroke='rgba(255,255,255,.55)'%20stroke-width='1.1'%20stroke-linejoin='round'/%3E%3C/svg%3E") 3 3,pointer !important}
+
+/* ======== 顶栏 ======== */
+.bar{position:fixed;left:0;right:0;top:0;z-index:60;display:flex;align-items:center;gap:14px;
+  padding:0 22px;font-size:18px;letter-spacing:.14em;
+  background:url('images/ui/nav_bg.png') repeat center/380px,linear-gradient(180deg,rgba(9,6,3,.94),rgba(9,6,3,0))}
+.bar .seal{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:5px;
+  font-family:'Ma Shan Zheng';font-size:21px;color:#f5e6cf;transform:rotate(-3deg);
+  background:linear-gradient(145deg,var(--cinn2),var(--cinn3));
+  box-shadow:0 3px 12px rgba(176,42,30,.45),inset 0 0 0 2px rgba(245,230,207,.32)}
+.bar .ttl{display:flex;align-items:center;gap:11px;font-family:'Ma Shan Zheng';font-size:24px;color:var(--paper)}
+.bar .spacer{flex:1}
+.bar a.lnk{display:inline-flex;align-items:center;min-height:40px;padding:7px 16px;
+  border:1px solid rgba(201,162,75,.42);border-radius:20px;color:var(--paper2);background:rgba(14,10,6,.6);
+  font-family:'Noto Serif SC',serif;font-size:18px;letter-spacing:.14em;
+  transition:border-color .3s,color .3s,transform .3s}
+.bar a.lnk:hover{border-color:var(--gold);color:#fff3cd;transform:translateY(-1px)}
+.bar .goldseal{color:var(--gold2);font-size:18px;letter-spacing:.2em}
+
+/* ======== 头部 ======== */
+.head{padding:118px 24px 8px;text-align:center;position:relative;z-index:2}
+.head .kicker{display:inline-flex;align-items:center;gap:14px;color:var(--gold);letter-spacing:.5em;text-indent:.5em;font-size:18px}
+.head .kicker::before,.head .kicker::after{content:'';width:56px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.head .kicker::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.head h1{font-size:clamp(40px,5.4vw,64px);margin-top:12px;color:var(--paper);text-shadow:0 4px 30px rgba(0,0,0,.6)}
+.head .sub{color:var(--ash);margin-top:10px;font-size:18px;letter-spacing:.14em}
+.head .sub b{color:var(--gold2);font-weight:600}
+
+/* ======== 战役选择 ======== */
+.tabs{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:26px auto 0;max-width:1200px;position:relative;z-index:2;padding:0 24px}
+.btab{width:340px;text-align:left;padding:18px 20px;border:1px solid rgba(201,162,75,.4);border-radius:10px;
+  background:rgba(14,10,6,.66);box-shadow:0 14px 40px rgba(0,0,0,.45);transition:border-color .3s,transform .3s,background .3s}
+.btab:hover{transform:translateY(-3px);border-color:var(--gold)}
+.btab.act{border-color:rgba(232,202,125,.75);background-image:url('images/ui/bg2.png'),linear-gradient(125deg,rgba(150,40,26,.5),rgba(20,12,6,.8));
+  background-repeat:repeat,no-repeat;background-size:170px,cover;box-shadow:0 18px 50px rgba(120,30,15,.4),inset 0 0 18px rgba(126,26,18,.4)}
+.btab h3{font-size:30px;color:#ffe9ad;display:flex;align-items:baseline;gap:10px}
+.btab h3 small{font-size:17px;color:var(--paper2);font-family:'Noto Serif SC'}
+.btab .etype{display:inline-block;margin-top:9px;padding:4px 13px;font-size:16px;letter-spacing:.22em;text-indent:.22em;border-radius:4px;
+  color:#ffd9a8;border:1px solid rgba(209,69,43,.65);background:rgba(126,26,18,.32)}
+.btab p{margin-top:9px;font-size:16px;line-height:1.75;color:var(--paper2);opacity:.88}
+.btab .done-flag{float:right;font-family:'Ma Shan Zheng';color:#9fe3b0;font-size:20px;transform:rotate(-4deg)}
+
+/* ======== 演武场 ======== */
+.stage{max-width:1360px;margin:34px auto 0;padding:0 24px 40px;position:relative;z-index:2;
+  display:flex;gap:18px;align-items:stretch;justify-content:center}
+.panel{border:1px solid rgba(201,162,75,.5);background:rgba(14,10,6,.72);box-shadow:0 26px 70px rgba(0,0,0,.55),inset 0 0 0 1px rgba(201,162,75,.16);position:relative}
+.panel::before{content:'';position:absolute;inset:7px;border:1px solid rgba(201,162,75,.24);pointer-events:none}
+.panel h4{font-family:'Ma Shan Zheng';font-size:24px;color:var(--gold2);letter-spacing:.16em;padding:16px 20px 0;position:relative;z-index:1}
+.panel .p-sub{font-size:16px;color:var(--ash);padding:3px 20px 0;letter-spacing:.1em;position:relative;z-index:1}
+
+/* 好汉名录 */
+.roster{width:292px;flex:none;padding-bottom:14px}
+.rlist{padding:14px 16px 4px;display:flex;flex-direction:column;gap:11px;position:relative;z-index:1}
+.hero-card{display:flex;align-items:center;gap:12px;padding:9px 11px;border:1px solid rgba(201,162,75,.34);border-radius:8px;
+  background:rgba(23,16,9,.72);transition:border-color .25s,transform .25s,box-shadow .25s;touch-action:none;user-select:none;-webkit-user-select:none}
+.hero-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.hero-card.sel{border-color:#ffd970;box-shadow:0 0 0 1px rgba(255,217,112,.5),0 10px 26px rgba(160,40,20,.35)}
+.hero-card.out{opacity:.5;filter:saturate(.4)}
+.hero-card .face{width:56px;height:56px;border-radius:50%;border:2px solid var(--gold3);box-shadow:0 3px 10px rgba(0,0,0,.55),inset 0 0 8px rgba(0,0,0,.5);overflow:hidden;flex:none;background:#1a120a}
+.hero-card .face img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.hero-card .who{flex:1;min-width:0}
+.hero-card .who .nm{font-family:'Ma Shan Zheng';font-size:23px;color:#f3e7c9;line-height:1.2}
+.hero-card .who .nk{font-size:16px;color:var(--ash);letter-spacing:.06em;margin-top:1px}
+.troop{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:44px;border-radius:7px;
+  font-family:'Ma Shan Zheng';font-size:22px;color:#ffe9ad;
+  border:1px solid rgba(232,202,125,.5);background:rgba(126,26,18,.4);box-shadow:inset 0 0 10px rgba(0,0,0,.4)}
+.troop.t-water{background:rgba(23,74,69,.55);color:#a8e6da;border-color:rgba(62,141,129,.6)}
+.troop.t-bow{background:rgba(96,72,18,.5);color:#f2d489}
+.troop.t-rider{background:rgba(70,32,14,.55);color:#f0b48a}
+.troop.t-odd{background:rgba(56,38,84,.55);color:#cdb9ef;border-color:rgba(148,122,201,.55)}
+.troop.t-scout{background:rgba(84,26,26,.5);color:#f0a3a3}
+.troop .tt{position:absolute;transform:scale(0);pointer-events:none}
+.roster .drag-hint{font-size:16px;color:var(--gold3);text-align:center;padding:4px 0 8px;letter-spacing:.12em}
+
+/* 战场 · 3D 实景兵推沙盘（无网格 · 标注点落位） */
+.fieldwrap{flex:0 1 auto;min-width:0}
+.fieldpanel{padding-bottom:16px}
+.field{position:relative;margin:14px 16px 0;padding:26px 22px 16px;perspective:1200px;
+  border:1px solid rgba(201,162,75,.55);
+  background:linear-gradient(180deg,#241a0e,#120c06 55%,#1c1410);
+  box-shadow:inset 0 0 30px rgba(0,0,0,.7),0 24px 50px rgba(0,0,0,.5)}
+.field::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:5;
+  background:linear-gradient(160deg,rgba(255,232,175,.08),transparent 38%,rgba(0,0,0,.26) 100%)}
+.board{position:relative;width:100%;max-width:632px;aspect-ratio:1.5;margin:0 auto;
+  border:2px solid rgba(201,162,75,.55);background-color:#0a0704;
+  background-repeat:no-repeat;background-size:100% 100%;background-position:center;
+  box-shadow:0 26px 56px rgba(0,0,0,.7),0 8px 0 rgba(18,11,5,.95),inset 0 0 40px rgba(0,0,0,.3)}
+/* 部署标注点：金色脉冲 + 编号 + 兵种需求 */
+.zmark{position:absolute;z-index:3;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;
+  pointer-events:auto}
+.zmark .pulse{width:20px;height:20px;border-radius:50%;position:relative;
+  background:radial-gradient(circle,rgba(255,220,130,.95),rgba(201,162,75,.55) 55%,transparent 72%);
+  box-shadow:0 0 12px rgba(255,200,90,.8)}
+.zmark .pulse::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:1.5px solid rgba(255,217,112,.65);
+  animation:zpulse 2.2s ease-out infinite}
+@keyframes zpulse{0%{transform:scale(.5);opacity:.9}80%{transform:scale(1.5);opacity:0}100%{transform:scale(1.5);opacity:0}}
+.zmark .zno{position:absolute;top:50%;left:50%;transform:translate(-50%,-56%);font-size:16px;font-family:'Noto Serif SC';
+  color:#2c1a06;font-weight:900;pointer-events:none;text-shadow:0 1px 0 rgba(255,240,200,.5)}
+.zmark .zneed{font-size:16px;font-family:'Ma Shan Zheng';color:#ffe9ad;white-space:nowrap;letter-spacing:.08em;
+  padding:1px 8px;border-radius:3px;background:rgba(12,8,4,.78);border:1px solid rgba(232,202,125,.5);
+  text-shadow:0 1px 3px rgba(0,0,0,.9)}
+.zmark:hover .pulse{filter:brightness(1.3)}
+/* 该点已落对兵种：转青玉色 */
+.zmark.filled .pulse{background:radial-gradient(circle,rgba(170,235,190,.95),rgba(60,160,110,.55) 55%,transparent 72%);
+  box-shadow:0 0 12px rgba(120,230,160,.75)}
+.zmark.filled .pulse::after{border-color:rgba(170,235,190,.6)}
+.zmark.filled .zneed{color:#c9f2d6;border-color:rgba(127,217,154,.55)}
+/* 落位兵牌：站在落点上 */
+.cell-unit{position:absolute;z-index:2;width:52px;height:74px;border-radius:7px 7px 3px 3px;
+  transform:translate(-50%,-92%);transform-origin:50% 100%;
+  border:1.5px solid rgba(232,202,125,.95);border-bottom-width:3px;
+  box-shadow:0 10px 18px rgba(0,0,0,.6),inset 0 0 0 1px rgba(60,40,10,.5);
+  background:#1a120a;touch-action:none;transition:filter .2s}
+.cell-unit::after{content:'';position:absolute;left:6%;right:6%;bottom:-9px;height:12px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,0,0,.62),transparent 70%);z-index:-1}
+.cell-unit:hover{filter:brightness(1.18)}
+.cell-unit img{width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:5px 5px 2px 2px;display:block}
+.cell-unit .tag{position:absolute;left:-8px;right:-8px;bottom:-3px;font-size:16px;line-height:1.4;text-align:center;color:#ffe9ad;
+  background:linear-gradient(180deg,rgba(126,26,18,.94),rgba(70,14,8,.96));border:1px solid rgba(232,202,125,.6);border-radius:3px;
+  font-family:'Ma Shan Zheng';letter-spacing:.05em}
+.cell-unit.okglow{box-shadow:0 0 0 2px rgba(120,230,150,.85),0 0 24px rgba(90,220,130,.55)}
+/* 阵亡：兵牌前倾倒下，余晖一黯 */
+.cell-unit.badglow{box-shadow:0 0 0 2px rgba(255,90,60,.9),0 0 26px rgba(230,60,30,.6);
+  animation:fallDie 1.1s cubic-bezier(.3,.6,.35,1) forwards}
+@keyframes fallDie{
+  0%{transform:translate(-50%,-92%) rotateX(0) rotateY(0) scale(1);opacity:1}
+  28%{transform:translate(-50%,-88%) rotateX(-14deg) rotateY(-8deg) scale(1.03);opacity:1}
+  100%{transform:translate(-50%,-38%) rotateX(84deg) rotateY(14deg) scale(.94);opacity:.28}}
+.field .war-tide{position:absolute;inset:0;pointer-events:none;z-index:4;opacity:0;transition:opacity .4s;
+  background:repeating-linear-gradient(90deg,transparent 0 34px,rgba(176,42,30,.16) 34px 36px)}
+.field.fighting .war-tide{opacity:1;animation:tide 1.2s linear infinite}
+@keyframes tide{to{background-position:70px 0}}
+/* 开战三轴运镜：沙盘倏然倾侧复归 */
+.field.fighting .board{animation:cineTilt 1.7s cubic-bezier(.22,.85,.28,1) forwards}
+@keyframes cineTilt{
+  0%{transform:rotateX(0) rotateY(0) rotateZ(0)}
+  42%{transform:rotateX(16deg) rotateY(-11deg) rotateZ(1.6deg)}
+  100%{transform:rotateX(0) rotateY(0) rotateZ(0)}}
+/* 战雾渐隐：硝烟漫起又散开 */
+.fog{position:absolute;inset:-1px;z-index:6;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse at 50% 42%,rgba(24,16,9,.18) 18%,rgba(20,13,7,.66) 62%,rgba(12,8,4,.9) 100%)}
+.field.fighting .fog{animation:fogSweep 2.6s ease forwards}
+@keyframes fogSweep{0%{opacity:0}26%{opacity:1}68%{opacity:.86}100%{opacity:0}}
+/* 天光扫描：一道晨光斜掠战场 */
+.scan{position:absolute;inset:0;z-index:7;pointer-events:none;overflow:hidden}
+.scan-beam{position:absolute;top:-28%;left:-38%;width:30%;height:156%;opacity:0;
+  background:linear-gradient(90deg,transparent,rgba(255,240,190,.2) 38%,rgba(255,236,168,.5) 50%,rgba(255,240,190,.2) 62%,transparent);
+  transform:rotate(21deg);filter:blur(13px)}
+.field.fighting .scan-beam{animation:scanSweep 2.1s cubic-bezier(.4,.1,.35,1) .12s forwards}
+@keyframes scanSweep{0%{opacity:0;transform:translateX(0) rotate(21deg)}18%{opacity:1}74%{opacity:.92}100%{opacity:0;transform:translateX(560%) rotate(21deg)}}
+.controls{display:flex;gap:12px;justify-content:center;padding:16px 16px 0;position:relative;z-index:1}
+.btn{font-family:'Noto Serif SC';font-size:19px;letter-spacing:.24em;text-indent:.24em;padding:11px 30px;border-radius:24px;
+  border:1px solid rgba(232,202,125,.6);color:#3a1409;
+  background-image:url('images/ui/bg2.png'),linear-gradient(125deg,#d95a35,#a32415);background-repeat:repeat,no-repeat;background-size:150px,cover;
+  text-shadow:0 1px 4px rgba(255,230,180,.4);box-shadow:0 8px 24px rgba(150,40,20,.45),inset 0 0 12px rgba(255,220,170,.22);
+  transition:transform .25s,box-shadow .25s,filter .25s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(180,50,25,.55);filter:brightness(1.08)}
+.btn.ghost{background:none;color:var(--paper2);border-color:rgba(201,162,75,.4);box-shadow:none;text-shadow:none}
+.btn.ghost:hover{color:#fff3cd;border-color:var(--gold)}
+.btn:disabled{opacity:.4;transform:none;filter:grayscale(.6)}
+.zone-tip{position:fixed;z-index:90;pointer-events:none;max-width:260px;padding:9px 14px;font-size:16px;line-height:1.7;color:#e8dcb8;
+  background:rgba(10,8,4,.95);border:1px solid rgba(201,162,75,.6);border-radius:4px;opacity:0;transition:opacity .15s;letter-spacing:.05em}
+
+/* 军情简 */
+.brief{width:328px;flex:none;display:flex;flex-direction:column}
+.brief .body{padding:14px 20px 20px;position:relative;z-index:1;overflow:auto;max-height:640px}
+.etype-big{display:inline-block;padding:6px 16px;font-size:18px;letter-spacing:.26em;text-indent:.26em;border-radius:4px;color:#ffd9a8;
+  border:1px solid rgba(209,69,43,.7);background-image:url('images/ui/bg2.png'),linear-gradient(125deg,rgba(150,40,26,.5),rgba(80,18,10,.6));
+  background-repeat:repeat,no-repeat;background-size:150px,cover;text-shadow:0 2px 6px rgba(60,10,5,.6)}
+.intel{margin-top:13px;font-size:17px;line-height:1.9;color:var(--paper2);letter-spacing:.03em}
+.intel b{color:#ffd9a8;font-weight:600}
+.orderlist{margin-top:14px;display:flex;flex-direction:column;gap:9px}
+.order{padding:10px 13px;border:1px solid rgba(201,162,75,.3);border-left:3px solid var(--gold3);border-radius:0 6px 6px 0;background:rgba(23,16,9,.6)}
+.order .o-t{font-size:18px;color:#f3e7c9;letter-spacing:.05em}
+.order .o-h{font-size:16px;color:var(--ash);margin-top:3px;line-height:1.6}
+.order.win{border-left-color:#7fd99a}
+.order.win .o-t::after{content:' ✓';color:#9fe3b0}
+.order.lose{border-left-color:#d1452b;opacity:.92}
+.order.lose .o-t::after{content:' ✗';color:#ff9d84}
+.brief .foot{padding:0 20px 18px;font-size:16px;color:var(--gold3);line-height:1.8;position:relative;z-index:1}
+
+/* ======== 战报弹窗 ======== */
+.mask{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:30px;
+  background:rgba(5,3,2,.78);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .4s}
+.mask.on{opacity:1;pointer-events:auto}
+.report{width:min(760px,94vw);max-height:88vh;overflow:auto;border:1px solid rgba(201,162,75,.65);border-radius:10px;
+  background-image:url('images/ui/bg1.png'),linear-gradient(160deg,rgba(26,18,9,.97),rgba(14,10,6,.98));
+  background-repeat:repeat,no-repeat;background-size:220px,cover;
+  box-shadow:0 40px 110px rgba(0,0,0,.7),inset 0 0 0 1px rgba(201,162,75,.2);
+  padding:34px 40px 30px;position:relative;transform:translateY(26px) scale(.97);transition:transform .45s var(--ease)}
+.mask.on .report{transform:none}
+.report .v-seal{position:absolute;top:22px;right:26px;width:64px;height:64px;display:flex;align-items:center;justify-content:center;
+  font-family:'Ma Shan Zheng';font-size:26px;color:#ffe9ad;transform:rotate(7deg);border-radius:8px;line-height:1.1;text-align:center;
+  background:linear-gradient(145deg,var(--cinn2),var(--cinn3));box-shadow:0 6px 18px rgba(176,42,30,.5),inset 0 0 0 2px rgba(245,230,207,.35)}
+.report h2{font-size:40px;color:#ffe9ad;letter-spacing:.1em;text-shadow:0 3px 18px rgba(160,40,15,.5)}
+.report .v-sub{margin-top:6px;font-size:17px;color:var(--ash);letter-spacing:.1em}
+.report .loss-line{margin-top:16px;padding:11px 16px;border:1px solid rgba(201,162,75,.3);border-radius:6px;background:rgba(9,6,4,.5);
+  font-size:17px;line-height:1.8;color:var(--paper2)}
+.report .loss-line b{color:#ffd9a8}
+.report .loss-line .dead{color:#ff9d84}
+.face-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+.face-item{width:74px;text-align:center}
+.face-item .fi{width:64px;height:64px;margin:0 auto;border-radius:50%;border:2px solid var(--gold3);overflow:hidden;background:#1a120a;position:relative}
+.face-item.dead .fi{filter:grayscale(1) brightness(.6);border-color:#7e1a12}
+.face-item.dead .fi::after{content:'殁';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Ma Shan Zheng';font-size:26px;color:#ff9d84;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+.face-item .fn{font-size:16px;margin-top:5px;color:var(--paper2)}
+.face-item.dead .fn{color:#ff9d84}
+.face-item .fr{font-size:16px;color:var(--gold3);line-height:1.35}
+/* 悲歌卡 */
+.elegy{margin-top:20px;border:1px solid rgba(209,69,43,.55);border-radius:8px;overflow:hidden;background:rgba(20,8,5,.55)}
+.elegy .eg-head{display:flex;gap:18px;padding:16px 18px;background:linear-gradient(90deg,rgba(126,26,18,.4),transparent);align-items:flex-start}
+.elegy .eg-img{width:132px;flex:none;border:1px solid rgba(232,202,125,.5);border-radius:4px;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.55)}
+.elegy .eg-img img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.elegy .eg-body{flex:1;min-width:0}
+.elegy .eg-page{font-size:16px;color:#ffb59d;letter-spacing:.12em}
+.elegy .eg-title{font-family:'Ma Shan Zheng';font-size:27px;color:#ffe0c4;margin-top:4px}
+.elegy .eg-text{margin-top:9px;font-size:17px;line-height:1.95;color:var(--paper2)}
+/* 注解卡 */
+.lore{margin-top:20px;border:1px solid rgba(232,202,125,.55);border-radius:8px;padding:20px 22px 18px;position:relative;
+  background:linear-gradient(160deg,rgba(60,44,14,.35),rgba(14,10,6,.5))}
+.lore .l-seal{position:absolute;top:-14px;left:20px;padding:4px 14px;font-family:'Ma Shan Zheng';font-size:19px;color:#3a1409;border-radius:4px;
+  background-image:url('images/ui/bg2.png'),linear-gradient(125deg,#e8ca7d,#c9a24b);background-repeat:repeat,no-repeat;background-size:120px,cover;
+  box-shadow:0 4px 12px rgba(120,90,20,.5)}
+.lore h3{font-size:27px;color:#ffe9ad;letter-spacing:.08em;margin-top:4px}
+.lore p{margin-top:10px;font-size:17px;line-height:2.05;color:var(--paper2);text-align:justify}
+.lore p b{color:#ffd9a8}
+.report .acts{display:flex;gap:14px;justify-content:center;margin-top:24px}
+
+/* 全捷金印 */
+.grand{display:none;max-width:760px;margin:0 auto 46px;padding:16px 26px;text-align:center;position:relative;z-index:2;
+  border:1px solid rgba(232,202,125,.65);border-radius:10px;
+  background-image:url('images/ui/bg1.png'),linear-gradient(125deg,rgba(120,88,22,.4),rgba(26,18,9,.85));
+  background-repeat:repeat,no-repeat;background-size:220px,cover}
+.grand.on{display:block;animation:grandIn .8s var(--ease)}
+@keyframes grandIn{from{opacity:0;transform:translateY(20px)}to{opacity:1}}
+.grand .g-t{font-family:'Ma Shan Zheng';font-size:30px;color:#ffe9ad;letter-spacing:.14em;text-shadow:0 3px 14px rgba(160,120,30,.5)}
+.grand .g-s{font-size:17px;color:var(--paper2);margin-top:5px;letter-spacing:.1em}
+
+footer{padding:26px 0 44px;text-align:center;color:var(--ash);font-size:16px;letter-spacing:.2em;position:relative;z-index:2}
+
+@media (max-width:1240px){
+  .stage{flex-wrap:wrap}
+  .roster{width:100%;max-width:560px}
+  .rlist{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .brief{width:100%;max-width:660px}
+  .brief .body{max-height:none}
+}
+@media (max-width:640px){
+  .rlist{grid-template-columns:1fr}
+  .cell-unit{width:40px;height:58px}
+  .zmark .zneed{font-size:15px;padding:0 6px}
+  .report{padding:24px 20px}
+  .elegy .eg-head{flex-direction:column}
+  .elegy .eg-img{width:170px}
+}
+</style>
+</head>
+<body>
+
+<nav class="bar">
+  <span class="seal">武</span>
+  <span class="ttl">演武堂</span>
+  <span class="goldseal">征方腊 · 阵型推演</span>
+  <span class="spacer"></span>
+  <a class="lnk" href="index.html">书斋</a>
+  <a class="lnk" href="map.html">山河舆图</a>
+  <a class="lnk" href="stars.html">星图</a>
+  <a class="lnk" href="scroll.html">长卷</a>
+  <a class="lnk" href="gallery.html">名绘</a>
+</nav>
+
+<header class="head">
+  <span class="kicker">数字文化复原工程 · 古阵推演</span>
+  <h1>征方腊 · 阵型推演</h1>
+  <p class="sub">拖拽布阵，以兵种相克破敌方之阵 —— 布阵得当则<b>损兵少、好汉存</b>；布阵失当，便蹈原著覆辙</p>
+</header>
+
+<div class="tabs" id="tabs"></div>
+
+<section class="stage">
+  <aside class="panel roster">
+    <h4>出阵好汉</h4>
+    <p class="p-sub">每将各有专长兵种 · 拖入战场落位</p>
+    <div class="rlist" id="rlist"></div>
+    <div class="drag-hint">拖拽好汉卡上阵，或点选好汉后再点标注点落位</div>
+  </aside>
+
+  <div class="fieldwrap">
+    <div class="panel fieldpanel">
+      <h4 id="fieldName">战场</h4>
+      <p class="p-sub" id="fieldSub">金色脉冲点 = 军令部署位（①②③④）· 拖好汉到标注点落位</p>
+      <div class="field" id="field"></div>
+      <div class="controls">
+        <button class="btn" id="btnAttack">发 起 总 攻</button>
+        <button class="btn ghost" id="btnReset">撤回全军</button>
+        <button class="btn ghost" id="btnArts">阵法图录</button>
+      </div>
+    </div>
+  </div>
+
+  <aside class="panel brief">
+    <h4>军情简</h4>
+    <p class="p-sub">探马细作探报 · 敌阵固定不移</p>
+    <div class="body">
+      <span class="etype-big" id="enemyType">—</span>
+      <div class="intel" id="intel"></div>
+      <div class="orderlist" id="orders"></div>
+    </div>
+    <div class="foot">凡军令所点之地，须以相合兵种赴之；违令冒进者，恐蹈前人覆辙。</div>
+  </aside>
+</section>
+
+<div class="grand" id="grand">
+  <div class="g-t">运筹帷幄 · 三阵皆捷</div>
+  <div class="g-s">杭州、乌龙岭、清溪三役均以最小损兵奏捷 ——「最优古阵法注解」已尽数收录阵法图录。</div>
+</div>
+
+<footer>绘卷水浒 · 演武堂 —— 以一张棋盘，复盘江南最后一战</footer>
+
+<!-- 战报弹窗 -->
+<div class="mask" id="mask">
+  <div class="report" id="report"></div>
+</div>
+<div class="zone-tip" id="ztip"></div>
+
+<script src="data.js"></script>
+<script>
+/* ================= 基础数据 ================= */
+const IMGS = {};   // 姓名 -> 立绘
+(window.HEROES||[]).forEach((h,i)=>{ IMGS[h.n]='images/ch'+String(i+1).padStart(3,'0')+'.jpg'; });
+const face = n => IMGS[n]||'';
+const nickOf = n => { const h=(window.HEROES||[]).find(x=>x.n===n); return h?h.nick:''; };
+
+const TROOPS = {
+  rider:{label:'马军',cls:'t-rider'},
+  foot:{label:'步军',cls:''},
+  water:{label:'水军',cls:'t-water'},
+  bow:{label:'弓弩',cls:'t-bow'},
+  scout:{label:'先锋',cls:'t-scout'},
+  odd:{label:'奇兵',cls:'t-odd'},
+};
+
+/* ================= 三大战役 ================= */
+const BATTLES=[
+{
+ id:'hangzhou', name:'杭州之战', sub:'涌金门 · 北关门',
+ enemyType:'水路拦截',
+ enemyDesc:'方腊太子方天定据城，石宝领兵游斗；城高壕阔，西湖水道设有拦截，城头踏弩炮石齐备。',
+ bg:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=isometric%203D%20game%20map%20of%20ancient%20Chinese%20battlefield%2C%20Song%20dynasty%20siege%20of%20Hangzhou%3A%20massive%20grey%20city%20wall%20with%20gate%20towers%20along%20the%20right%20edge%2C%20blue%20lake%20water%20occupying%20the%20lower-left%20corner%2C%20dirt%20roads%20and%20open%20plain%20in%20the%20center%2C%20a%20small%20watchtower%20hill%20at%20upper%20middle%2C%20scattered%20pine%20trees%2C%20morning%20mist%2C%20muted%20ink-wash%20earth%20tones%20with%20cinnabar%20accents%2C%20hand-painted%20game%20board%20style%2C%20birds%20eye%20oblique%20view%2C%20no%20text%20no%20people&image_size=landscape_16_9',
+ heroes:[
+  {n:'张顺',troop:'water',role:'水伏·潜师'},
+  {n:'李俊',troop:'water',role:'水军都督'},
+  {n:'林冲',troop:'rider',role:'马军主力'},
+  {n:'徐宁',troop:'rider',role:'金枪马军'},
+  {n:'花荣',troop:'bow',role:'弓弩远程'},
+  {n:'李逵',troop:'foot',role:'步军先锋营'}],
+ missions:[
+  {zone:[[2,7],[3,7],[4,7]],need:'water',label:'① 西湖水道 · 潜师接应',hint:'遣水军伏于湖荡，暗夺水门，慎勿登城'},
+  {zone:[[9,4],[9,5]],need:'rider',label:'② 北关门 · 正兵诱敌',hint:'马军列于关前，诱石宝出城浪战'},
+  {zone:[[5,1]],need:'bow',label:'③ 南高峰台 · 弓弩压城',hint:'弓弩队登台，覆压城头垛口'},
+  {zone:[[6,5],[6,6]],need:'foot',label:'④ 众安桥巷 · 步军扫街',hint:'先锋步军清荡街巷，接应夺门'}],
+ tragedies:[
+  {hero:'张顺',deaths:['张顺'],danger:(c,r)=>c>=10&&r<=5,
+   page:'第114回 · 宁海军宋江吊孝 涌金门张顺归神', title:'涌金门 · 万箭攒身',
+   text:'浪里白条等不得大军齐整，孤身潜过西湖去攀涌金门。城上踏弩硬弓齐发，他在水底伏得七日七夜，却躲不过城头那一片箭雨，万箭攒身，沉在湖底。后来英魂不散，附在兄长张横身上一刀劈了方天定——那是后话。兵法有云：水路潜师，必以大队舟师接应，轻身攀堞，乃取死之道。'},
+  {hero:'徐宁',deaths:['徐宁'],danger:(c,r)=>c===10&&r===4,
+   page:'第115回 · 张顺魂捉方天定 宋江智取宁海军', title:'北关门 · 药箭项颈',
+   text:'金枪手随军抢到城门洞口，一枝药箭正中项颈。城中药石无医，拖了半月，人便没了——三十六天罡里，第一个陨落的就是他。关下自有敌将伏弩伺客，马军之责在关前诱敌浪战，不是叩门送死。'}],
+ lore:{title:'宋人水陆攻城之制',
+  text:'宋人攻城，先夺水门：楼船塞其壕、车船（轮桨战船）横其口，使城中水路援绝，谓之「断水」。再以<b>砲座发石</b>覆压城头，<b>神臂弓</b>三百步破甲，专射垛口守卒，谓之「压城」；步军持洞屋、云梯继进，马军游弋城下，专斩出城浪战之敌。<b>张顺之殁</b>，正犯「水探孤身、无舟师接应」之忌——潜师必有大队水军为援，先夺水门，再图城门，方是正兵。'},
+ perfect:'水师暗夺水门，关前马军诱出石宝，台弩覆压城头，步军巷战接应——一夜之间，杭州城破，梁山人马几乎无损。'
+},
+{
+ id:'wulongling', name:'乌龙岭之战', sub:'睦州 · 山岭绝壁',
+ enemyType:'山地伏兵',
+ enemyDesc:'岭高百丈，敌军伏于崖顶林莽，滚木礌石堆积如山；岭下大江，另有水伏截断归路。',
+ bg:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=isometric%203D%20game%20map%20of%20ancient%20Chinese%20mountain%20battlefield%3A%20steep%20forested%20ridge%20occupying%20the%20upper%20half%2C%20sheer%20cliff%20face%20on%20the%20right%20side%20with%20a%20narrow%20goat%20path%2C%20wide%20blue%20river%20across%20the%20bottom%20edge%2C%20rocky%20shallows%20at%20river%20edge%2C%20dense%20pine%20trees%20on%20the%20ridge%2C%20valley%20mist%2C%20Song%20dynasty%20China%2C%20hand-painted%20game%20board%20style%2C%20birds%20eye%20oblique%20view%2C%20no%20text%20no%20people&image_size=landscape_16_9',
+ heroes:[
+  {n:'解珍',troop:'scout',role:'攀崖先锋'},
+  {n:'解宝',troop:'scout',role:'攀崖先锋'},
+  {n:'阮小二',troop:'water',role:'水军头领'},
+  {n:'孟康',troop:'water',role:'炮船监造'},
+  {n:'凌振',troop:'bow',role:'砲队·远程'},
+  {n:'燕顺',troop:'foot',role:'步军压阵'}],
+ missions:[
+  {zone:[[2,7],[3,7]],need:'bow',label:'① 江心炮阵 · 制高覆压',hint:'砲船隔江列阵，先覆压崖顶伏兵'},
+  {zone:[[11,2],[11,3]],need:'scout',label:'② 东崖小径 · 轻兵攀袭',hint:'先锋缘径而上——务必待炮火先覆崖顶，方可轻登',
+   also:{zone:[[2,7],[3,7]],need:'bow'}, failT:'xzxb'},
+  {zone:[[4,7],[5,7]],need:'water',label:'③ 岭下江面 · 战船控扼',hint:'水军战船控住江面，慎勿驶入岭根险滩'},
+  {zone:[[3,5],[4,5]],need:'foot',label:'④ 岭下平川 · 步军压阵',hint:'步军收拢阵脚，专防敌伏冲杀，不可追敌入山'}],
+ tragedies:[
+  {id:'xzxb',hero:'解珍 · 解宝',deaths:['解珍','解宝'],danger:null,
+   page:'第116回 · 卢俊义分兵歙州道 宋公明大战乌龙岭', title:'百丈绝壁 · 双雄坠崖',
+   text:'崖顶伏兵未除，炮弩不发，两头蛇、双尾蝎便攀着绝壁抢上去了。半岭之上伏兵齐起，滚木礌石顺崖而下——解珍一脚踏空，从百丈高崖上坠了下去，解宝跟着坠下。猎人拿了一辈子山，最后被山拿了。兵法有云：凡攻山，先以炮弩制高，覆压其巅，然后轻兵可登。'},
+  {hero:'阮小二',deaths:['阮小二'],danger:(c,r)=>(c===5||c===6)&&(r===5||r===6),
+   page:'第116回 · 卢俊义分兵歙州道 宋公明大战乌龙岭', title:'岭根险滩 · 拔刀自刎',
+   text:'船队贪功驶入岭根险滩，正落进敌人水伏的口袋。进退不得，敌军四面合围——立地太岁怕被擒受辱，拔刀自刎于船头。渔家汉子，宁折不弯。岭下水道自有战船控扼之责，贪近冒进，便是取死。'},
+  {hero:'孟康',deaths:['孟康'],danger:(c,r)=>(c===5||c===6)&&(r===5||r===6),
+   page:'第116回 · 卢俊义分兵歙州道 宋公明大战乌龙岭', title:'岭根险滩 · 一炮殒身',
+   text:'玉幡竿还在船头指挥装炮，岭上砲石齐发，一炮正中头盔，船沉人亡。造了一辈子船，殁在船里。'},
+  {hero:'燕顺',deaths:['燕顺'],danger:(c,r)=>c>=8&&r<=4,
+   page:'第116回 · 卢俊义分兵歙州道 宋公明大战乌龙岭', title:'追敌入山 · 暗锤当头',
+   text:'锦毛虎追着石宝杀进山腹，追得性起，阵脚早已散了。石宝回身一记流星锤，当头打下——锦毛虎再凶，也凶不过暗锤。步军压阵之责在收拢阵脚、专防伏兵，追敌冒进者，必堕敌彀中。'}],
+ lore:{title:'宋军山地攻坚之制',
+  text:'宋军山地行军，前列<b>先锋</b>、中驱正兵、后殿辎重，缓辔徐进，不贪险径。凡攻山，先以<b>砲弩「制高」</b>——发石放箭，覆压崖顶伏兵，滚木礌石不能下，然后轻兵缘径而登，谓之「<b>先火后兵</b>」。<b>解珍解宝之殁</b>，正犯「炮火未覆、轻兵先登」之忌。岭下大江，尤须战船控扼、战守有度——水路是归路，也是生路；贪近冒进，退路即绝。'},
+ perfect:'砲船先覆崖顶，滚木礌石不能下；先锋攀袭岭背，战船控扼江面，步军压阵如山——乌龙岭一战而下，好汉无一折损。'
+},
+{
+ id:'qingxi', name:'清溪 · 帮源洞之战', sub:'方腊老巢 · 隘口洞府',
+ enemyType:'隘口死守',
+ enemyDesc:'方杰、杜微守隘口，兵精粮足；娄敏中守源水门，洞后山径险僻，万松林中皆有伏哨。',
+ bg:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=isometric%203D%20game%20map%20of%20ancient%20Chinese%20canyon%20battlefield%3A%20dark%20mountain%20stronghold%20with%20cave%20fortress%20on%20the%20right%20side%2C%20a%20narrow%20fortified%20pass%20gate%20in%20the%20center%2C%20mountains%20surrounding%20the%20upper%20area%2C%20a%20stream%20with%20water%20gate%20at%20lower%20right%2C%20pine%20grove%20in%20the%20middle%2C%20rebel%20lair%20atmosphere%2C%20Song%20dynasty%20China%2C%20hand-painted%20game%20board%20style%2C%20birds%20eye%20oblique%20view%2C%20no%20text%20no%20people&image_size=landscape_16_9',
+ heroes:[
+  {n:'秦明',troop:'rider',role:'马军正兵'},
+  {n:'鲁智深',troop:'foot',role:'步军搜山'},
+  {n:'柴进',troop:'odd',role:'奇兵·内应'},
+  {n:'阮小五',troop:'water',role:'诈降水军'},
+  {n:'孙二娘',troop:'foot',role:'步军策应'},
+  {n:'杜迁',troop:'foot',role:'步军后队'}],
+ missions:[
+  {zone:[[5,4]],need:'rider',label:'① 隘口阵前 · 诈败诱敌',hint:'马军搦战，诈败佯输——诱方杰出隘，慎勿恋战入隘'},
+  {zone:[[10,7],[11,7]],need:'water',label:'② 源水门 · 水军诈降',hint:'水军诈降船队直抵水门，待内应火起，一举夺门'},
+  {zone:[[11,2],[11,3]],need:'odd',label:'③ 洞后山径 · 奇兵火起',hint:'内应潜出洞后山径，举火为号，里应外合'},
+  {zone:[[8,3]],need:'foot',label:'④ 万松林 · 步军搜山',hint:'步军搜林扫伏——林深之处，或有方腊遁走之路'}],
+ tragedies:[
+  {hero:'秦明',deaths:['秦明'],danger:(c,r)=>(c===6||c===7)&&r===4,
+   page:'第118回 · 卢俊义大战昱岭关 宋公明智取清溪洞', title:'清溪阵前 · 飞刀画戟',
+   text:'霹雳火与方杰斗到三十余合不分胜负，性起恋战，直杀进隘口深处。杜微一记飞刀从暗处飞来，他偏头去躲的那一瞬，方杰的画戟已经捅进胸口——梁山阵亡的最高级马军将领，就此栽下马来。兵法有云：诱敌者贵在佯输诈败，一入隘口深处，万箭暗器齐发，虽霹雳火不能免。'},
+  {hero:'阮小五',deaths:['阮小五'],danger:(c,r)=>c>=11&&r===4,
+   page:'第118回 · 卢俊义大战昱岭关 宋公明智取清溪洞', title:'源水门 · 事机败露',
+   text:'诈降的船队开到了洞前，火号未起，先自露了行藏。娄敏中手起一刀——短命二郎，诨号一语成谶。诈降之计，贵在待号而动；火起为号，号未举而身先入，安得不败？'},
+  {hero:'孙二娘',deaths:['孙二娘'],danger:(c,r)=>(c===9||c===10)&&r===4,
+   page:'第118回 · 卢俊义大战昱岭关 宋公明智取清溪洞', title:'洞前山道 · 飞刀暗至',
+   text:'母夜叉随军杀到帮源洞前，杜微一记飞刀从暗处飞来，就此殒命。十字坡的老板娘，一生算尽了过路客，没算过暗处的刀。洞前山道自有伏哨暗器，步军之责在搜林策应，不当直面洞门。'},
+  {hero:'杜迁',deaths:['杜迁'],danger:(c,r)=>c===7&&(r===4||r===5),
+   page:'第118回 · 卢俊义大战昱岭关 宋公明智取清溪洞', title:'清溪城破 · 乱军马踏',
+   text:'隘口才破，摸着天随乱军抢入，城巷狭窄，人马相踏——梁山开山元老，与宋万同功同命，乱军之中被马踏身亡。第一个上山的人，倒在了最后一战。'}],
+ lore:{title:'宋军常阵奇正之制',
+  text:'宋军野战常阵：<b>中军</b>居中调度、<b>先锋</b>当先搦战、两翼策应、殿后卫辎，进退一旗，号令如一。其要在「<b>奇正相生</b>」——正兵当面搦战，<b>佯北而走</b>，引敌出垒；奇兵间道出其不意，或断粮道，或为内应，火起为号。<b>秦明之殁</b>，犯「单骑恋战、无翼策应」之忌；<b>柴进潜身敌腹、火起为号</b>，正是「以奇胜」之效。搜山扫穴，亦必以步军循序而为，方无漏网之虞。'},
+ perfect:'秦明诈败诱出方杰，水军待号夺门，柴进洞后火起，鲁智深万松林里一杖打翻方腊，生擒献俘——江南底定，众将俱全。'
+}
+];
+
+/* ================= 状态 ================= */
+const P={ b:null, bi:0, place:{}, sel:-1, dragging:null, arts:{}, fighting:false };
+try{ P.arts = JSON.parse(localStorage.getItem('jssh_arts')||'{}'); }catch(e){ P.arts={}; }
+const $=s=>document.querySelector(s);
+const key=(c,r)=>c+','+r;
+
+/* ================= 渲染 ================= */
+function renderTabs(){
+  $('#tabs').innerHTML = BATTLES.map((b,i)=>
+    `<div class="btab ${i===P.bi?'act':''}" data-i="${i}">
+      ${P.arts[b.id]?'<span class="done-flag">已通关</span>':''}
+      <h3>${b.name}<small>${b.sub}</small></h3>
+      <span class="etype">${b.enemyType}</span>
+      <p>${b.enemyDesc}</p>
+    </div>`).join('');
+  document.querySelectorAll('.btab').forEach(el=>el.addEventListener('click',()=>selectBattle(+el.dataset.i)));
+}
+
+function cellXY(c,r){ return {x:(c-0.5)/12*100, y:(r-0.5)/8*100}; }
+function renderField(){
+  const b=P.b, f=$('#field');
+  $('#fieldName').textContent=b.name+' · 战场推演盘';
+  $('#fieldSub').textContent='金色脉冲点 = 军令部署位（①②③④，标注所需兵种）· 拖好汉到标注点附近落位';
+  let html=`<div class="board" id="board" style="background-image:url('${b.bg}')">`;
+  b.missions.forEach((m,mi)=>{
+    const cx=m.zone.reduce((s,[c])=>s+c,0)/m.zone.length;
+    const cy=m.zone.reduce((s,[,r])=>s+r,0)/m.zone.length;
+    const p=cellXY(cx,cy);
+    html+=`<div class="zmark" data-z="${mi}" style="left:${p.x}%;top:${p.y}%">
+      <div class="pulse"></div><span class="zno">${'一二三四'[mi]}</span>
+      <span class="zneed">${TROOPS[m.need].label}</span></div>`;
+  });
+  html+='<div class="war-tide"></div><div class="fog"></div><div class="scan"><div class="scan-beam"></div></div></div>';
+  f.innerHTML=html;
+  refreshUnits();
+}
+function refreshUnits(){
+  const bd=document.getElementById('board'); if(!bd)return;
+  bd.querySelectorAll('.cell-unit').forEach(u=>u.remove());
+  Object.keys(P.place).forEach(i=>{
+    const h=P.b.heroes[i], p=cellXY(P.place[i].c,P.place[i].r);
+    const u=document.createElement('div'); u.className='cell-unit'; u.dataset.h=i;
+    u.style.left=p.x+'%'; u.style.top=p.y+'%';
+    u.innerHTML=`<img src="${face(h.n)}" alt="${h.n}"><span class="tag">${h.n}</span>`;
+    bd.appendChild(u);
+    bindUnit(u);
+  });
+  /* 军令点已落对兵种 → 标注点转青玉色 */
+  bd.querySelectorAll('.zmark').forEach(zm=>{
+    const m=P.b.missions[+zm.dataset.z];
+    zm.classList.toggle('filled', typeIn(m.zone,m.need));
+  });
+  renderRoster();
+}
+function renderRoster(){
+  const b=P.b;
+  $('#rlist').innerHTML=b.heroes.map((h,i)=>{
+    const out=P.place[i]!==undefined, sel=P.sel===i;
+    const t=TROOPS[h.troop];
+    return `<div class="hero-card ${out?'out':''} ${sel?'sel':''}" data-h="${i}" title="${h.role}">
+      <div class="face"><img src="${face(h.n)}" alt="${h.n}"></div>
+      <div class="who"><div class="nm">${h.n}</div><div class="nk">${nickOf(h.n)} · ${h.role}</div></div>
+      <span class="troop ${t.cls}">${t.label[0]}<span class="tt">${t.label}</span></span>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.hero-card').forEach(el=>bindCard(+el.dataset.h,el));
+}
+function renderOrders(res){
+  const b=P.b;
+  $('#orders').innerHTML=b.missions.map((m,i)=>{
+    const cls=res?(res.mres[i].ok?'win':'lose'):'';
+    return `<div class="order ${cls}"><div class="o-t">${m.label}</div><div class="o-h">${m.hint}</div></div>`;
+  }).join('');
+}
+function renderBrief(){
+  const b=P.b;
+  $('#enemyType').textContent='敌方固定阵型 · '+b.enemyType;
+  $('#intel').innerHTML='<b>【探马报】</b>'+b.enemyDesc+' 观其阵，破其势——四道军令点在图中，遣对兵种赴之。';
+  renderOrders(null);
+}
+
+function selectBattle(i){
+  P.bi=i; P.b=BATTLES[i]; P.place={}; P.sel=-1; P.fighting=false;
+  $('#field').classList.remove('fighting');
+  $('#mask').classList.remove('on');
+  renderTabs(); renderBrief(); renderField();
+}
+
+/* ================= 拖拽布阵 ================= */
+let ghost=null;
+function bindCard(i,el){
+  el.addEventListener('pointerdown',ev=>{
+    if(P.fighting)return;
+    ev.preventDefault();
+    startDrag(i,ev,ev.currentTarget,P.sel===i);
+  });
+}
+function bindUnit(u){
+  u.addEventListener('pointerdown',ev=>{
+    if(P.fighting)return;
+    ev.preventDefault(); ev.stopPropagation();
+    startDrag(+u.dataset.h,ev,u,P.sel===+u.dataset.h);
+  });
+}
+function startDrag(i,ev,fromEl,wasSel){
+  P.sel=i; renderRoster();
+  const h=P.b.heroes[i];
+  ghost=document.createElement('div');
+  ghost.style.cssText='position:fixed;z-index:200;pointer-events:none;width:56px;height:56px;border-radius:50%;border:2px solid #e8ca7d;box-shadow:0 10px 30px rgba(0,0,0,.6);overflow:hidden;transform:translate(-50%,-60%)';
+  ghost.innerHTML=`<img src="${face(h.n)}" style="width:100%;height:100%;object-fit:cover;object-position:top center">`;
+  document.body.appendChild(ghost);
+  moveGhost(ev.clientX,ev.clientY);
+  const sx=ev.clientX, sy=ev.clientY;
+  const onMove=e=>moveGhost(e.clientX,e.clientY);
+  const onUp=e=>{
+    window.removeEventListener('pointermove',onMove);
+    window.removeEventListener('pointerup',onUp);
+    if(ghost){ghost.remove();ghost=null;}
+    const tapped=Math.hypot(e.clientX-sx,e.clientY-sy)<8;
+    const pt=pointToCell(e.clientX,e.clientY);
+    if(pt){ drop(i,pt.c,pt.r,fromEl); P.sel=-1; renderRoster(); }
+    else if(tapped){ if(wasSel){P.sel=-1;} renderRoster(); }   /* 轻点=点选模式，保持选中；再点同卡取消 */
+    else {
+      /* 拖到战场之外：已布单位撤回名录，未布单位仅取消 */
+      if(fromEl&&fromEl.classList&&fromEl.classList.contains('cell-unit')){ delete P.place[i]; refreshUnits(); }
+      P.sel=-1; renderRoster();
+    }
+  };
+  window.addEventListener('pointermove',onMove);
+  window.addEventListener('pointerup',onUp);
+}
+function moveGhost(x,y){ if(ghost){ghost.style.left=x+'px';ghost.style.top=y+'px';} }
+/* 屏幕点 → 棋盘坐标（1..12, 1..8），不在盘上返回 null */
+function pointToCell(x,y){
+  const bd=document.getElementById('board'); if(!bd)return null;
+  const r=bd.getBoundingClientRect();
+  if(x<r.left||x>r.right||y<r.top||y>r.bottom)return null;
+  const c=Math.min(12,Math.max(1,Math.round((x-r.left)/r.width*12)));
+  const rr=Math.min(8,Math.max(1,Math.round((y-r.top)/r.height*8)));
+  return {c,r:rr};
+}
+/* 磁吸：落点靠近某军令标注位（≤1.7 格）时吸附上去，免去目测对齐 */
+function snapToZone(c,r){
+  let best=null,bd=1e9;
+  P.b.missions.forEach(m=>m.zone.forEach(([zc,zr])=>{
+    const d=Math.hypot(zc-c,zr-r);
+    if(d<bd){bd=d;best={c:zc,r:zr};}
+  }));
+  return bd<=1.7?best:{c,r};
+}
+function drop(i,c,r,fromEl){
+  const s=snapToZone(c,r); c=s.c; r=s.r;
+  // 已有单位占据 → 顶替回名录
+  const occ=Object.keys(P.place).find(k=>P.place[k].c===c&&P.place[k].r===r);
+  if(occ!==undefined&&+occ!==i) delete P.place[occ];
+  if(fromEl&&fromEl.classList&&fromEl.classList.contains('cell-unit')){
+    // 换位：清掉旧位
+    delete P.place[i];
+  }
+  P.place[i]={c,r}; P.sel=-1;
+  refreshUnits();
+}
+$('#field').addEventListener('click',ev=>{
+  if(P.fighting)return;
+  if(ev.target.closest('.cell-unit'))return;   /* 点击已布单位由 pointer 事件处理（拿起/取消），避免误放回原位 */
+  if(ev.target.closest('.zmark')&&P.sel<0)return;
+  if(P.sel>=0){ const pt=pointToCell(ev.clientX,ev.clientY); if(pt){ drop(P.sel,pt.c,pt.r,null); P.sel=-1; renderRoster(); } }
+});
+$('#field').addEventListener('mouseover',ev=>{
+  const zm=ev.target.closest('.zmark');
+  const tip=$('#ztip');
+  if(zm){
+    const m=P.b.missions[+zm.dataset.z];
+    tip.textContent=m.label+' —— '+m.hint;
+    tip.style.opacity=1;
+    const r=zm.getBoundingClientRect();
+    tip.style.left=Math.min(window.innerWidth-280,r.left)+'px';
+    tip.style.top=(r.top-46)+'px';
+  } else tip.style.opacity=0;
+});
+$('#field').addEventListener('mouseleave',()=>{ $('#ztip').style.opacity=0; });
+
+/* ================= 判定 ================= */
+function heroAtZone(zone){
+  const set=new Set(zone.map(([c,r])=>key(c,r)));
+  return Object.keys(P.place).filter(i=>set.has(key(P.place[i].c,P.place[i].r)));
+}
+function typeIn(zone,need){ return heroAtZone(zone).some(i=>P.b.heroes[i].troop===need); }
+
+function judge(){
+  const b=P.b, deaths=[], trigs=[];
+  // 1) 好汉个人危险位（原著覆辙）
+  b.heroes.forEach((h,i)=>{
+    const p=P.place[i]; if(!p)return;
+    b.tragedies.forEach(t=>{
+      if(t.danger&&t.hero===h.n&&t.danger(p.c,p.r)&&!trigs.includes(t)){ trigs.push(t); t.deaths.forEach(d=>deaths.push(d)); }
+    });
+  });
+  // 2) 军令达成 + 联动悲剧
+  const mres=b.missions.map(m=>{
+    const ok=typeIn(m.zone,m.need)&&(!m.also||typeIn(m.also.zone,m.also.need));
+    if(m.failT&&typeIn(m.zone,m.need)&&!typeIn(m.also.zone,m.also.need)){
+      const t=b.tragedies.find(x=>x.id===m.failT);
+      if(t&&!trigs.includes(t)){ trigs.push(t); t.deaths.forEach(d=>deaths.push(d)); }
+    }
+    return {m,ok};
+  });
+  // 3) 战果分级
+  const done=mres.filter(x=>x.ok).length;
+  const perfect=(done===b.missions.length&&trigs.length===0);
+  const half=Math.ceil(b.missions.length/2);
+  const level=perfect?'win':(done>=half?'pyrrhic':'lose');
+  // 标记兵牌光效
+  document.querySelectorAll('#board .cell-unit').forEach(u=>{
+    u.classList.remove('okglow','badglow');
+    const nm=b.heroes[+u.dataset.h].n, p=P.place[u.dataset.h];
+    if(deaths.includes(nm))u.classList.add('badglow');
+    else if(p&&mres.some(x=>x.ok&&x.m.zone.some(([cc,rr])=>cc===p.c&&rr===p.r)))u.classList.add('okglow');
+  });
+  showReport(level,deaths,trigs,mres);
+}
+
+/* ================= 战报弹窗 ================= */
+function showReport(level,deaths,trigs,mres){
+  const b=P.b;
+  renderOrders({mres});
+  const head={win:['大捷',b.perfect],pyrrhic:['惨胜','阵虽得破，然有将军蹈了原著覆辙，江南的风，又冷了几分。'],lose:['兵败','阵型散乱，敌伏尽出——且看原著之中，此役折了谁人。']}[level];
+  const lossPct={win:'折损不过百中二三',pyrrhic:'折损十之三四',lose:'折损十之六七'}[level];
+  const faces=b.heroes.map(h=>{
+    const dead=deaths.includes(h.n);
+    return `<div class="face-item ${dead?'dead':''}"><div class="fi"><img src="${face(h.n)}" alt="${h.n}"></div><div class="fn">${h.n}</div><div class="fr">${dead?'殁于阵中':(level==='win'?'立功':'生还')}</div></div>`;
+  }).join('');
+  const elegies=trigs.map(t=>`
+    <div class="elegy"><div class="eg-head">
+      <div class="eg-img"><img src="${face(t.deaths[0])}" alt="${t.hero}"></div>
+      <div class="eg-body">
+        <div class="eg-page">原著阵亡章节 · ${t.page}</div>
+        <div class="eg-title">${t.title}</div>
+        <div class="eg-text">${t.text}</div>
+      </div>
+    </div></div>`).join('');
+  const lore=level==='win'?`
+    <div class="lore"><span class="l-seal">最优古阵法注解 · 已录入图录</span>
+      <h3>${b.lore.title}</h3><p>${b.lore.text}</p></div>`:'';
+  $('#report').innerHTML=`
+    <div class="v-seal">${head[0]}</div>
+    <h2>${b.name} · ${head[0]}</h2>
+    <div class="v-sub">${b.sub} · 敌阵「${b.enemyType}」</div>
+    <div class="loss-line">${head[1]}<br>战报：${lossPct}。<b>${deaths.length?'阵亡好汉：':'存活好汉：'}</b>${deaths.length?deaths.map(n=>'<span class="dead">'+n+'</span>').join('、'):'全员'}。</div>
+    <div class="face-row">${faces}</div>
+    ${elegies}${lore}
+    <div class="acts">
+      <button class="btn ghost" id="mReset">重整旗鼓</button>
+      <button class="btn" id="mNext">移师他战</button>
+    </div>`;
+  if(level==='win'){ P.arts[b.id]=true; try{localStorage.setItem('jssh_arts',JSON.stringify(P.arts));}catch(e){}
+    if(Object.keys(P.arts).length>=BATTLES.length)$('#grand').classList.add('on'); renderTabs(); }
+  $('#mask').classList.add('on');
+  $('#mReset').onclick=()=>{ $('#mask').classList.remove('on'); resetAll(); };
+  $('#mNext').onclick=()=>{ $('#mask').classList.remove('on'); resetAll(); };
+}
+function resetAll(){
+  P.place={};P.sel=-1;P.fighting=false;
+  $('#field').classList.remove('fighting');
+  renderField(); renderOrders(null);   /* 兵牌随盘面重建，光效自清 */
+}
+$('#btnAttack').addEventListener('click',()=>{
+  const n=Object.keys(P.place).length;
+  if(n<P.b.heroes.length){ flashMsg('尚有 '+(P.b.heroes.length-n)+' 员好汉未落位，不可空阵出战。'); return; }
+  P.fighting=true; $('#field').classList.add('fighting');
+  setTimeout(judge,1500);   /* 让三轴运镜、天光、战雾先走完，再落战报 */
+});
+$('#btnReset').addEventListener('click',resetAll);
+$('#btnArts').addEventListener('click',()=>{
+  const b0=BATTLES.filter(b=>P.arts[b.id]);
+  $('#report').innerHTML=`
+    <h2>阵法图录</h2>
+    <div class="v-sub">大捷之役，录最优古阵法注解于此 —— 共 ${b0.length} / ${BATTLES.length} 则</div>
+    ${b0.map(b=>`<div class="lore"><span class="l-seal">注</span><h3>${b.lore.title}</h3><p>${b.lore.text}</p></div>`).join('')||'<div class="loss-line">尚无注解 —— 须在任一战役布出无损大捷，方可录得宋代军制注解一则。</div>'}
+    <div class="acts"><button class="btn" id="mClose">掩 卷</button></div>`;
+  $('#mask').classList.add('on');
+  $('#mClose').onclick=()=>$('#mask').classList.remove('on');
+});
+function flashMsg(txt){
+  $('#report').innerHTML=`
+    <h2>且慢</h2><div class="loss-line">${txt}</div>
+    <div class="acts"><button class="btn" id="mClose">继续布阵</button></div>`;
+  $('#mask').classList.add('on');
+  $('#mClose').onclick=()=>$('#mask').classList.remove('on');
+}
+$('#mask').addEventListener('click',e=>{ if(e.target.id==='mask'&&!P.fighting)$('#mask').classList.remove('on'); });
+
+/* ================= 启动 ================= */
+BATTLES.forEach(b=>{ const im=new Image(); im.src=b.bg; });   /* 预载三战场底图 */
+selectBattle(0);
+if(Object.keys(P.arts).length>=BATTLES.length)$('#grand').classList.add('on');
+</script>
+<script src="music.js?v=20261017d"></script>
+</body>
+</html>
